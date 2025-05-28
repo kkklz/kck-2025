@@ -1,7 +1,5 @@
 <template>
-  <v-app class="font-roboto antialiased">
-    <AppBar />
-
+  <NuxtLayout>
     <NuxtPage />
-  </v-app>
+  </NuxtLayout>
 </template>
