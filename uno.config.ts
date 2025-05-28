@@ -6,7 +6,8 @@ export default defineConfig({
     presetWebFonts({
       provider: 'google',
       fonts: {
-        sans: ['Roboto', 'Open Sans'],
+        sans: 'Open Sans',
+        roboto: 'Roboto',
       },
     }),
   ],
