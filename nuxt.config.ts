@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
-    'nuxt-vuefire',
+    '@nuxtjs/supabase',
   ],
 
   vuetify: {
@@ -29,16 +29,8 @@ export default defineNuxtConfig({
     strategy: 'no_prefix',
   },
 
-  vuefire: {
-    auth: {
-      enabled: true,
-    },
-    config: {
-      apiKey: import.meta.env.NUXT_PUBLIC_API_KEY,
-      authDomain: import.meta.env.NUXT_PUBLIC_AUTH_DOMAIN,
-      projectId: import.meta.env.NUXT_PUBLIC_PROJECT_ID,
-      appId: import.meta.env.NUXT_PUBLIC_APP_ID,
-    },
+  supabase: {
+    redirect: false,
   },
 
   typescript: {
