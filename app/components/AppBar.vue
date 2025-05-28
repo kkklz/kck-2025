@@ -2,21 +2,23 @@
 <!-- eslint-disable vue/padding-line-between-tags -->
 <template>
   <v-app-bar>
-    <v-app-bar-title>
+    <v-app-bar-title class="pa-0 inline-flex items-center">
       <NuxtLink
         to="/"
-        class="w-min"
       >
         <v-img
           src="/exam-booster-icon.svg"
-          class="h-[50px] w-[150px]"
+          class="h-[50px] w-[150px] inline-block"
         />
       </NuxtLink>
     </v-app-bar-title>
 
     <template #append>
       <v-list class="flex">
-        <v-list-item link>
+        <v-list-item
+          link
+          to="/login"
+        >
           Login
         </v-list-item>
         <v-list-item link>

@@ -2,6 +2,6 @@
   <v-app class="font-roboto antialiased">
     <AppBar />
 
-    <v-slot />
+    <slot />
   </v-app>
 </template>
