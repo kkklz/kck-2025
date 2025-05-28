@@ -1,1 +1,25 @@
-{}
+{
+  "universal": {
+    "login": "Login",
+    "register": "Register",
+    "lecturer": "Lecturer"
+  },
+  "auth": {
+    "forgot-password": "Forgot password",
+    "email-must-be-valid": "E-mail must be valid",
+    "password-rules": "Password must be 8 characters long, contain 1 lower case and 1 upper case character, at least 1 number and 1 special character.",
+    "invalid-credentials": "Invalid credentials",
+    "password": "Password",
+    "confirm-password": "Confirm password",
+    "email-already-in-use": "E-mail is already in use",
+    "passwords-must-match": "Passwords must match",
+    "first-name": "First name",
+    "invalid-first-name": "Invalid first name",
+    "invalid-last-name": "Invalid last name",
+    "invalid-index-number": "Invalid index number",
+    "last-name": "Last name",
+    "index-number": "Index number",
+    "settings": "Settings",
+    "logout": "Logout"
+  }
+}

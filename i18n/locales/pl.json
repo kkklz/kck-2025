@@ -1,1 +1,25 @@
-{}
+{
+  "universal": {
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "lecturer": "Wykładowca"
+  },
+  "auth": {
+    "forgot-password": "Zapomniałem hasła",
+    "password-rules": "Hasło musi się składać z conajmniej 8 znaków, zawierać 1 małą literę, 1 dużą, co najmniej 1 liczbę i 1 znak specjalny.",
+    "invalid-credentials": "Nie istnieje użytkownik o podanych danych",
+    "email-must-be-valid": "Adres e-mail musi być poprawny",
+    "password": "Hasło",
+    "confirm-password": "Potwierdź hasło",
+    "email-already-in-use": "E-mail jest już zajęty",
+    "passwords-must-match": "Hasła muszą być takie same",
+    "first-name": "Imię",
+    "invalid-first-name": "Niepoprawne imię",
+    "invalid-last-name": "Niepoprawne nazwisko",
+    "invalid-index-number": "Niepoprawny numer indeksu",
+    "last-name": "Nazwisko",
+    "index-number": "Numer indeksu",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj się"
+  }
+}

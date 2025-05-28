@@ -1,5 +1,3 @@
-<!-- eslint-disable vue/no-bare-strings-in-template -->
-<!-- eslint-disable vue/padding-line-between-tags -->
 <template>
   <v-app-bar>
     <v-app-bar-title class="pa-0 inline-flex items-center">
@@ -16,15 +14,87 @@
     <template #append>
       <v-list class="flex">
         <v-list-item
+          v-if="!user"
           link
           to="/login"
+          variant="plain"
         >
-          Login
+          {{ $t('universal.login') }}
         </v-list-item>
-        <v-list-item link>
-          Register
+
+        <v-list-item
+          v-if="!user"
+          link
+          variant="plain"
+          to="/register"
+        >
+          {{ $t('universal.register') }}
+        </v-list-item>
+
+        <v-list-item>
+          <v-select
+            v-model="locale"
+            hide-details
+            prepend-icon="mdi-translate"
+            :items="availableLocales"
+          >
+            <template #item="{'props': itemProps, item}">
+              <v-list-item
+                v-bind="itemProps"
+                :title="item.value"
+                @click="setLocale(item.value)"
+              />
+            </template>
+          </v-select>
+        </v-list-item>
+
+        <v-list-item
+          v-if="user"
+          :title="user.email!"
+        >
+          <v-menu
+            activator="parent"
+          >
+            <v-list>
+              <v-list-item
+                link
+                append-icon="mdi-cog"
+                to="/settings"
+              >
+                {{ $t('auth.settings') }}
+              </v-list-item>
+
+              <v-list-item
+                link
+                append-icon="mdi-logout"
+                base-color="#F44336"
+                @click="authStore.handleLogout"
+              >
+                {{ $t('auth.logout') }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-list-item>
       </v-list>
     </template>
   </v-app-bar>
 </template>
+
+<script setup lang="ts">
+const { locale, availableLocales, setLocale } = useI18n()
+const savedLanguage = localStorage.getItem('app_language') as 'pl' | 'en'
+if (savedLanguage) {
+  setLocale(savedLanguage)
+}
+
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore)
+
+watch(locale, (newLocale) => {
+  localStorage.setItem('app_language', newLocale)
+})
+
+watch(user, (newUser) => {
+  user.value = newUser
+})
+</script>
