@@ -14,7 +14,7 @@
     <template #append>
       <v-list class="flex">
         <v-list-item
-          v-if="!user"
+          v-if="!authUser"
           link
           to="/login"
           variant="plain"
@@ -23,7 +23,7 @@
         </v-list-item>
 
         <v-list-item
-          v-if="!user"
+          v-if="!authUser"
           link
           variant="plain"
           to="/register"
@@ -49,8 +49,8 @@
         </v-list-item>
 
         <v-list-item
-          v-if="user"
-          :title="user.email!"
+          v-if="authUser"
+          :title="authUser.email!"
         >
           <v-menu
             activator="parent"
@@ -88,13 +88,13 @@ if (savedLanguage) {
 }
 
 const authStore = useAuthStore()
-const { user } = storeToRefs(authStore)
+const { authUser } = storeToRefs(authStore)
 
 watch(locale, (newLocale) => {
   localStorage.setItem('app_language', newLocale)
 })
 
-watch(user, (newUser) => {
-  user.value = newUser
+watch(authUser, (newUser) => {
+  authUser.value = newUser
 })
 </script>

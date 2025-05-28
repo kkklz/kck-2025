@@ -2,7 +2,7 @@ import type { AuthError, User as AuthUser } from '@supabase/supabase-js'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user: Ref<AuthUser | null> = ref(null)
+  const authUser: Ref<AuthUser | null> = ref(null)
   const error: Ref<AuthError | null> = ref(null)
 
   const supabase = useSupabaseClient()
@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
       return
     }
 
-    user.value = data.user
+    authUser.value = data.user
 
     router.push('/')
   }
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
       return
     }
 
-    user.value = data.user
+    authUser.value = data.user
 
     router.push('/')
   }
@@ -48,14 +48,14 @@ export const useAuthStore = defineStore('auth', () => {
   async function handleLogout() {
     error.value = null
     const { error: err } = await supabase.auth.signOut()
-    user.value = null
+    authUser.value = null
     if (err) {
       error.value = err
 
       return
     }
 
-    user.value = null
+    authUser.value = null
     router.push('/login')
   }
 
@@ -63,12 +63,12 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
-      user.value = session.user
+      authUser.value = session.user
     }
   }
 
   return {
-    user,
+    authUser,
     error,
     handleRegister,
     handleLogin,
