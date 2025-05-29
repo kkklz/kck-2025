@@ -1,6 +1,6 @@
 export interface Question {
+  id: string
   content: string
-  correctAnswer: number
   points: number
   answers: string[]
 }
