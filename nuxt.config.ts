@@ -30,7 +30,13 @@ export default defineNuxtConfig({
   },
 
   supabase: {
-    redirect: false,
+    redirect: true,
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      exclude: ['/register'],
+    },
+    types: './app/types/database.types.ts',
   },
 
   typescript: {

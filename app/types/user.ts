@@ -1,8 +1,8 @@
 export interface User {
   id: string
-  name: string
-  email: string
-  photoUrl?: string
-  role: 'admin' | 'lecturer' | 'student'
-  groupIds: string[]
+  firstName: string
+  lastName: string
+  photoUrl?: string | null
+  role: 'admin' | 'student'
+  studentIndex?: string | null
 }

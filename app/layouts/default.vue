@@ -1,7 +1,5 @@
 <template>
-  <v-app class="font-roboto antialiased">
-    <AppBar />
+  <AppBar />
 
-    <v-slot />
-  </v-app>
+  <slot />
 </template>
