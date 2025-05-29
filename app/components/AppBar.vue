@@ -31,23 +31,6 @@
           {{ $t('universal.register') }}
         </v-list-item>
 
-        <v-list-item>
-          <v-select
-            v-model="locale"
-            hide-details
-            prepend-icon="mdi-translate"
-            :items="availableLocales"
-          >
-            <template #item="{'props': itemProps, item}">
-              <v-list-item
-                v-bind="itemProps"
-                :title="item.value"
-                @click="setLocale(item.value)"
-              />
-            </template>
-          </v-select>
-        </v-list-item>
-
         <v-list-item
           v-if="authUser"
           :title="authUser.email!"
@@ -68,7 +51,7 @@
                 link
                 append-icon="mdi-logout"
                 base-color="#F44336"
-                @click="authStore.handleLogout"
+                @click="authStore.logout"
               >
                 {{ $t('auth.logout') }}
               </v-list-item>
@@ -81,18 +64,8 @@
 </template>
 
 <script setup lang="ts">
-const { locale, availableLocales, setLocale } = useI18n()
-const savedLanguage = localStorage.getItem('app_language') as 'pl' | 'en'
-if (savedLanguage) {
-  setLocale(savedLanguage)
-}
-
 const authStore = useAuthStore()
 const { authUser } = storeToRefs(authStore)
-
-watch(locale, (newLocale) => {
-  localStorage.setItem('app_language', newLocale)
-})
 
 watch(authUser, (newUser) => {
   authUser.value = newUser

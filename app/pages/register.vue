@@ -134,7 +134,7 @@
   </v-card>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="ts">
 const { t } = useI18n()
 
 const authStore = useAuthStore()
@@ -163,6 +163,8 @@ const confirmPasswordRules = [(value: string) => {
 }]
 
 async function handleRegister() {
-  await authStore.handleRegister(email.value, password.value)
+  await authStore.register(email.value, password.value, { firstName: firstName.value, lastName: lastName.value, role: lecturer.value
+    ? 'admin'
+    : 'student', studentIndex: indexNumber.value })
 }
 </script>

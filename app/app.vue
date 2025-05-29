@@ -12,6 +12,6 @@
 const authStore = useAuthStore()
 
 onBeforeMount(() => {
-  authStore.init()
+  authStore.setupAuthListener()
 })
 </script>

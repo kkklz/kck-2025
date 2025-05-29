@@ -36,6 +36,7 @@ export default defineNuxtConfig({
       callback: '/confirm',
       exclude: ['/register'],
     },
+    types: './app/types/database.types.ts',
   },
 
   typescript: {

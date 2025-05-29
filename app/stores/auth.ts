@@ -1,5 +1,9 @@
-import type { AuthError, User as AuthUser } from '@supabase/supabase-js'
+import type { User as AuthUser } from '@supabase/supabase-js'
+import type { User } from '@/types/user'
+import { AuthError } from '@supabase/supabase-js'
 import { defineStore } from 'pinia'
+
+type RegisterUser = Omit<User, 'id' | 'email' | 'photoUrl'>
 
 export const useAuthStore = defineStore('auth', () => {
   const authUser: Ref<AuthUser | null> = ref(null)
@@ -7,8 +11,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const supabase = useSupabaseClient()
   const router = useRouter()
+  const userStore = useUserStore()
 
-  async function handleRegister(email: string, password: string) {
+  async function register(email: string, password: string, userData: RegisterUser) {
     // TODO: Dodanie pozostałych pól z formularza rejestracji oraz zaimplementowanie Users Store do dodania ich do bazy danych
     error.value = null
     const { data, error: err } = await supabase.auth.signUp({
@@ -22,12 +27,23 @@ export const useAuthStore = defineStore('auth', () => {
       return
     }
 
+    if (data.user == null) {
+      error.value = new AuthError('No user')
+
+      return
+    }
+
+    userStore.addUser({
+      id: data.user.id,
+      ...userData,
+    })
+
     authUser.value = data.user
 
     router.push('/')
   }
 
-  async function handleLogin(email: string, password: string) {
+  async function login(email: string, password: string) {
     error.value = null
     const { data, error: err } = await supabase.auth.signInWithPassword({
       email,
@@ -45,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/')
   }
 
-  async function handleLogout() {
+  async function logout() {
     error.value = null
     const { error: err } = await supabase.auth.signOut()
     authUser.value = null
@@ -59,20 +75,24 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/login')
   }
 
-  async function init() {
-    error.value = null
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      authUser.value = session.user
-    }
+  function setupAuthListener() {
+    supabase.auth.onAuthStateChange((event, session) => {
+      authUser.value = session?.user || null
+
+      setTimeout(async () => {
+        if (authUser.value != null) {
+          await userStore.fetchUser(authUser.value.id)
+        }
+      }, 0)
+    })
   }
 
   return {
     authUser,
     error,
-    handleRegister,
-    handleLogin,
-    handleLogout,
-    init,
+    register,
+    login,
+    logout,
+    setupAuthListener,
   }
 })

@@ -101,7 +101,7 @@ const { emailRules, passwordRules } = useValidationRules()
 
 async function handleLogin() {
   loading.value = true
-  await authStore.handleLogin(email.value, password.value)
+  await authStore.login(email.value, password.value)
   loading.value = false
 }
 </script>

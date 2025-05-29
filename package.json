@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint . --fix",
-    "type-check": "nuxi typecheck"
+    "type-check": "nuxi typecheck",
+    "gen-types": "bunx supabase gen types typescript --project-id mwahwjgjpkakjdbxiamq > ./app/types/database.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -28,6 +29,7 @@
     "@unocss/eslint-plugin": "^66.1.2",
     "@unocss/nuxt": "^66.1.2",
     "eslint": "^9.27.0",
+    "supabase": "^2.23.4",
     "typescript": "^5.8.3",
     "unocss": "^66.1.2",
     "vue-tsc": "^2.2.10"
