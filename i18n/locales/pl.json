@@ -2,7 +2,8 @@
   "universal": {
     "login": "Zaloguj się",
     "register": "Zarejestruj się",
-    "lecturer": "Wykładowca"
+    "lecturer": "Wykładowca",
+    "home-page": "Strona główna"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",

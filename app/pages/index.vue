@@ -1,5 +1,5 @@
 <template>
   <div class="line-through">
-    Strona główna
+    {{ $t("universal.home-page") }}
   </div>
 </template>
