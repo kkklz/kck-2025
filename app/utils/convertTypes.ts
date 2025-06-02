@@ -17,6 +17,7 @@ export type DBAnswerInsert = TablesInsert<'answer'>
 // --- Prize ---
 export function dbPrizeToPrize(dbPrize: DBPrize): Prize {
   return {
+    id: dbPrize.id,
     place:
       dbPrize.placeFrom === dbPrize.placeTo
         ? dbPrize.placeFrom
@@ -34,6 +35,7 @@ export function prizeToDbPrize(prize: Prize): DBPrizeInsert {
     : prize.place
 
   return {
+    id: prize.id,
     placeFrom,
     placeTo,
     reward: prize.reward,
@@ -49,11 +51,12 @@ export function dbAnswerToAnswer(dbAnswer: DBAnswer): Answer {
   }
 }
 
-export function answerToDbAnswer(answer: Answer): DBAnswerInsert {
+export function answerToDbAnswer(answer: Answer, questionId: string): DBAnswerInsert {
   return {
     id: answer.id,
     answer: answer.answer,
     correct: answer.correct,
+    questionId,
   }
 }
 
@@ -67,11 +70,12 @@ export function dbQuestionToQuestion(dbQuestion: DBQuestion, answers: Answer[]):
   }
 }
 
-export function questionToDbQuestion(question: Question): DBQuestionInsert {
+export function questionToDbQuestion(question: Question, quizId: string): DBQuestionInsert {
   return {
     id: question.id,
     content: question.content,
     points: question.points,
+    quizId,
   }
 }
 
@@ -82,17 +86,16 @@ export function dbQuizToQuiz(dbQuiz: DBQuiz, prize: Prize[], questions: Question
     description: dbQuiz.description,
     timeLimit: dbQuiz.timeLimit,
     maxAttempts: dbQuiz.maxAttempts,
-    prizes: prize,
     questions,
   }
 }
 
-export function quizToDbQuiz(quiz: Quiz, prizeId: string): DBQuizInsert {
+export function quizToDbQuiz(quiz: Quiz, courseId: string): DBQuizInsert {
   return {
     id: quiz.id,
     description: quiz.description,
     timeLimit: quiz.timeLimit,
     maxAttempts: quiz.maxAttempts,
-    prizeId,
+    courseId,
   }
 }

@@ -14,63 +14,55 @@ export interface Database {
           answer: string
           correct: boolean
           id: string
+          questionId: string
         }
         Insert: {
           answer: string
           correct: boolean
           id?: string
+          questionId: string
         }
         Update: {
           answer?: string
           correct?: boolean
           id?: string
+          questionId?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'answer_questionId_fkey'
+            columns: ['questionId']
+            isOneToOne: false
+            referencedRelation: 'question'
+            referencedColumns: ['id']
+          },
+        ]
       }
       course: {
         Row: {
           description: string
           id: string
           name: string
+          prizeId: string
         }
         Insert: {
           description: string
           id?: string
           name: string
+          prizeId: string
         }
         Update: {
           description?: string
           id?: string
           name?: string
-        }
-        Relationships: []
-      }
-      course_quiz: {
-        Row: {
-          courseId: string
-          quizId: string
-        }
-        Insert: {
-          courseId: string
-          quizId: string
-        }
-        Update: {
-          courseId?: string
-          quizId?: string
+          prizeId?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'course_quiz_courseId_fkey'
-            columns: ['courseId']
+            foreignKeyName: 'course_prizeId_fkey'
+            columns: ['prizeId']
             isOneToOne: false
-            referencedRelation: 'course'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'course_quiz_quizId_fkey'
-            columns: ['quizId']
-            isOneToOne: false
-            referencedRelation: 'quiz'
+            referencedRelation: 'prize'
             referencedColumns: ['id']
           },
         ]
@@ -131,77 +123,58 @@ export interface Database {
           content: string
           id: string
           points: number
+          quizId: string
         }
         Insert: {
           content: string
           id?: string
           points: number
+          quizId: string
         }
         Update: {
           content?: string
           id?: string
           points?: number
-        }
-        Relationships: []
-      }
-      question_answer: {
-        Row: {
-          answerId: string
-          questionId: string
-        }
-        Insert: {
-          answerId: string
-          questionId: string
-        }
-        Update: {
-          answerId?: string
-          questionId?: string
+          quizId?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'question_answer_answerId_fkey'
-            columns: ['answerId']
+            foreignKeyName: 'question_quizId_fkey'
+            columns: ['quizId']
             isOneToOne: false
-            referencedRelation: 'answer'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'question_answer_questionId_fkey'
-            columns: ['questionId']
-            isOneToOne: false
-            referencedRelation: 'question'
+            referencedRelation: 'quiz'
             referencedColumns: ['id']
           },
         ]
       }
       quiz: {
         Row: {
+          courseId: string
           description: string
           id: string
           maxAttempts: number
-          prizeId: string
           timeLimit: number
         }
         Insert: {
+          courseId: string
           description: string
           id?: string
           maxAttempts: number
-          prizeId: string
           timeLimit: number
         }
         Update: {
+          courseId?: string
           description?: string
           id?: string
           maxAttempts?: number
-          prizeId?: string
           timeLimit?: number
         }
         Relationships: [
           {
-            foreignKeyName: 'quiz_prizeId_fkey'
-            columns: ['prizeId']
+            foreignKeyName: 'quiz_courseId_fkey'
+            columns: ['courseId']
             isOneToOne: false
-            referencedRelation: 'prize'
+            referencedRelation: 'course'
             referencedColumns: ['id']
           },
         ]
@@ -254,36 +227,6 @@ export interface Database {
           },
         ]
       }
-      quiz_question: {
-        Row: {
-          questionId: string
-          quizId: string
-        }
-        Insert: {
-          questionId: string
-          quizId: string
-        }
-        Update: {
-          questionId?: string
-          quizId?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'quiz_question_questionId_fkey'
-            columns: ['questionId']
-            isOneToOne: false
-            referencedRelation: 'question'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'quiz_question_quizId_fkey'
-            columns: ['quizId']
-            isOneToOne: false
-            referencedRelation: 'quiz'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       user: {
         Row: {
           firstName: string
@@ -295,7 +238,7 @@ export interface Database {
         }
         Insert: {
           firstName: string
-          id?: string
+          id: string
           lastName: string
           photoUrl?: string | null
           role?: Database['public']['Enums']['role'] | null
