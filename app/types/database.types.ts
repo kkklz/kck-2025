@@ -18,7 +18,7 @@ export interface Database {
         Insert: {
           answer: string
           correct: boolean
-          id: string
+          id?: string
         }
         Update: {
           answer?: string
@@ -35,7 +35,7 @@ export interface Database {
         }
         Insert: {
           description: string
-          id: string
+          id?: string
           name: string
         }
         Update: {
@@ -113,7 +113,7 @@ export interface Database {
           reward: string
         }
         Insert: {
-          id: string
+          id?: string
           placeFrom: number
           placeTo: number
           reward: string
@@ -134,7 +134,7 @@ export interface Database {
         }
         Insert: {
           content: string
-          id: string
+          id?: string
           points: number
         }
         Update: {
@@ -184,7 +184,7 @@ export interface Database {
         }
         Insert: {
           description: string
-          id: string
+          id?: string
           maxAttempts: number
           prizeId: string
           timeLimit: number
@@ -221,7 +221,7 @@ export interface Database {
           attemptDate: string
           currentStreak: number
           finalScore: number
-          id: string
+          id?: string
           questionAnswered: number
           quizId: string
           status: Database['public']['Enums']['status']
@@ -295,7 +295,7 @@ export interface Database {
         }
         Insert: {
           firstName: string
-          id: string
+          id?: string
           lastName: string
           photoUrl?: string | null
           role?: Database['public']['Enums']['role'] | null

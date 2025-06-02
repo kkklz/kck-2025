@@ -1,9 +1,19 @@
+import type { QueryError } from '@supabase/supabase-js'
 import type { Quiz } from '@/types/quiz'
 import type { Database } from '~/types/database.types'
+import {
+  answerToDbAnswer,
+  dbAnswerToAnswer,
+  dbPrizeToPrize,
+  dbQuestionToQuestion,
+  dbQuizToQuiz,
+  prizeToDbPrize,
+  questionToDbQuestion,
+} from '@/utils/convertTypes'
 
 export const useQuizStore = defineStore('quiz', () => {
   const quiz: Ref<Quiz | null> = ref(null)
-  const error: Ref<Error | null> = ref(null)
+  const error: Ref<QueryError | null> = ref(null)
   const loading: Ref<boolean> = ref(false)
 
   const supabase = useSupabaseClient<Database>()
@@ -15,7 +25,7 @@ export const useQuizStore = defineStore('quiz', () => {
     error.value = null
     try {
       // Dodaj quiz (bez pytań i nagród)
-      const { id, description, timeLimit, maxAttempts, prizes, questions } = newQuiz
+      const { prizes, questions } = newQuiz
       // Najpierw dodaj nagrodę (jeśli nie istnieje)
       let prizeId: string
       if (prizes.length > 0) {
@@ -35,12 +45,7 @@ export const useQuizStore = defineStore('quiz', () => {
           prizeId = existingPrize.id
         }
         else {
-          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert({
-            id: crypto.randomUUID(),
-            placeFrom,
-            placeTo,
-            reward: mainPrize.reward,
-          }).select().single()
+          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert(prizeToDbPrize(mainPrize)).select().single()
           if (prizeError || !prizeData)
             throw prizeError
           prizeId = prizeData.id
@@ -50,44 +55,36 @@ export const useQuizStore = defineStore('quiz', () => {
         throw new Error('Quiz musi mieć przynajmniej jedną nagrodę')
       }
       // Dodaj quiz
-      const { data: quizData, error: quizError } = await supabase.from(QUIZ_TABLE).insert({
-        id,
-        description,
-        timeLimit,
-        maxAttempts,
+      const quizInsert = {
+        description: newQuiz.description,
+        timeLimit: newQuiz.timeLimit,
+        maxAttempts: newQuiz.maxAttempts,
         prizeId,
-      }).select().single()
+      }
+      const { data: quizData, error: quizError } = await supabase.from(QUIZ_TABLE).insert(quizInsert).select().single()
       if (quizError || !quizData)
         throw quizError
+      const quizId = quizData.id
       // Dodaj pytania i powiązania quiz_question
       await Promise.all(questions.map(async (q) => {
-        const questionId = q.id
         // Dodaj pytanie jeśli nie istnieje
-        const { data: _questionData, error: questionError } = await supabase.from('question').insert({
-          id: questionId,
-          content: q.content,
-          points: q.points,
-        }).select().single()
+        const { data: _questionData, error: questionError } = await supabase.from('question').insert(questionToDbQuestion(q)).select().single()
         if (questionError && questionError.code !== '23505')
           throw questionError // 23505 = duplicate
         await supabase.from('quiz_question').insert({
-          quizId: id,
-          questionId,
+          quizId,
+          questionId: q.id,
         })
         // Dodaj odpowiedzi do pytania
         await Promise.all(q.answers.map(async (a) => {
-          await supabase.from('answer').insert({
-            id: a.id,
-            answer: a.answer,
-            correct: a.correct,
-          })
+          await supabase.from('answer').insert(answerToDbAnswer(a))
           await supabase.from('question_answer').insert({
-            questionId,
+            questionId: q.id,
             answerId: a.id,
           })
         }))
       }))
-      await fetchQuiz(id)
+      await fetchQuiz(quizId)
     }
     catch (err: any) {
       error.value = err
@@ -123,30 +120,14 @@ export const useQuizStore = defineStore('quiz', () => {
       // Mapowanie do typu Quiz
       const questions = (quizData.quiz_question || []).map((qq: any) => {
         const q = qq.question
+        const answers = (q.question_answer || []).map((qa: any) => dbAnswerToAnswer(qa.answer))
 
-        return {
-          id: q.id,
-          content: q.content,
-          points: q.points,
-          answers: (q.question_answer || []).map((qa: any) => qa.answer),
-        }
+        return dbQuestionToQuestion(q, answers)
       })
       const prizes = quizData.prize
-        ? [{
-            place: quizData.prize.placeFrom === quizData.prize.placeTo
-              ? quizData.prize.placeFrom
-              : [quizData.prize.placeFrom, quizData.prize.placeTo] as [number, number],
-            reward: quizData.prize.reward,
-          }]
+        ? [dbPrizeToPrize(quizData.prize)]
         : []
-      quiz.value = {
-        id: quizData.id,
-        description: quizData.description,
-        timeLimit: quizData.timeLimit,
-        maxAttempts: quizData.maxAttempts,
-        prizes,
-        questions,
-      }
+      quiz.value = dbQuizToQuiz(quizData, prizes, questions)
     }
     catch (err: any) {
       error.value = err
@@ -181,31 +162,15 @@ export const useQuizStore = defineStore('quiz', () => {
       const quizzesWithDetails = (quizzes || []).map((quizData: any) => {
         const questions = (quizData.quiz_question || []).map((qq: any) => {
           const q = qq.question
+          const answers = (q.question_answer || []).map((qa: any) => dbAnswerToAnswer(qa.answer))
 
-          return {
-            id: q.id,
-            content: q.content,
-            points: q.points,
-            answers: (q.question_answer || []).map((qa: any) => qa.answer),
-          }
+          return dbQuestionToQuestion(q, answers)
         })
         const prizes = quizData.prize
-          ? [{
-              place: quizData.prize.placeFrom === quizData.prize.placeTo
-                ? quizData.prize.placeFrom
-                : [quizData.prize.placeFrom, quizData.prize.placeTo] as [number, number],
-              reward: quizData.prize.reward,
-            }]
+          ? [dbPrizeToPrize(quizData.prize)]
           : []
 
-        return {
-          id: quizData.id,
-          description: quizData.description,
-          timeLimit: quizData.timeLimit,
-          maxAttempts: quizData.maxAttempts,
-          prizes,
-          questions,
-        }
+        return dbQuizToQuiz(quizData, prizes, questions)
       })
 
       return quizzesWithDetails
@@ -244,12 +209,7 @@ export const useQuizStore = defineStore('quiz', () => {
           prizeId = existingPrize.id
         }
         else {
-          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert({
-            id: crypto.randomUUID(),
-            placeFrom,
-            placeTo,
-            reward: mainPrize.reward,
-          }).select().single()
+          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert(prizeToDbPrize(mainPrize)).select().single()
           if (prizeError || !prizeData)
             throw prizeError
           prizeId = prizeData.id
@@ -270,27 +230,18 @@ export const useQuizStore = defineStore('quiz', () => {
       // Na razie: usuwamy stare powiązania i dodajemy nowe
       await supabase.from('quiz_question').delete().eq('quizId', quizId)
       await Promise.all(questions.map(async (q) => {
-        const questionId = q.id
-        const { data: _questionData, error: questionError } = await supabase.from('question').upsert({
-          id: questionId,
-          content: q.content,
-          points: q.points,
-        })
+        const { data: _questionData, error: questionError } = await supabase.from('question').upsert(questionToDbQuestion(q))
         if (questionError)
           throw questionError
         await supabase.from('quiz_question').insert({
           quizId,
-          questionId,
+          questionId: q.id,
         })
-        await supabase.from('question_answer').delete().eq('questionId', questionId)
+        await supabase.from('question_answer').delete().eq('questionId', q.id)
         await Promise.all(q.answers.map(async (a) => {
-          await supabase.from('answer').upsert({
-            id: a.id,
-            answer: a.answer,
-            correct: a.correct,
-          })
+          await supabase.from('answer').upsert(answerToDbAnswer(a))
           await supabase.from('question_answer').insert({
-            questionId,
+            questionId: q.id,
             answerId: a.id,
           })
         }))
