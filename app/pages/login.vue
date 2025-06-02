@@ -49,17 +49,6 @@
           </template>
         </v-text-field>
 
-        <div class="flex justify-end">
-          <v-btn
-            size="small"
-            variant="plain"
-            type="button"
-            to="/forgot-password"
-          >
-            {{ $t('auth.forgot-password') }}
-          </v-btn>
-        </div>
-
         <div
           class="flex flex-col gap-3 items-center items-stretch justify-between md:flex-row"
         >
