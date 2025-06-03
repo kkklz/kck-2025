@@ -61,7 +61,9 @@
   "courses": {
     "course-name": "Nazwa kursu",
     "course-description": "Opis kursu",
-    "course-photo": "Zdjęcie kursu"
+    "course-photo": "Zdjęcie kursu",
+    "courses-view": "Widok kursów",
+    "quiz-list": "Lista quizów"
   },
   "quiz": {
     "quiz": "Quiz",
