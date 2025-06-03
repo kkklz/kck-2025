@@ -61,12 +61,6 @@
     "course-description": "Opis kursu",
     "course-photo": "Zdjęcie kursu"
   },
-  "quizzes": {
-    "quizzes": "Quizy",
-    "add-new-quiz": "Dodaj nowy quiz",
-    "quizz-title": "Quiz #{0}",
-    "no-quizzes-available": "Brak dostepnych quizów."
-  },
   "quiz": {
     "quiz": "Quiz",
     "description": "Opis",
@@ -79,6 +73,9 @@
     "answer": "Odpowiedź",
     "correct": "Poprawna odpowiedź",
     "edit-quiz": "Edytuj quiz",
-    "add-quiz": "Utwórz quiz"
+    "add-quiz": "Utwórz quiz",
+    "quizzes": "Quizy",
+    "quizz-title": "Quiz #{0}",
+    "no-quizzes-available": "Brak dostepnych quizów."
   }
 }

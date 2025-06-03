@@ -39,14 +39,14 @@
       />
     </v-card>
 
-    <v-card :title="$t('quizzes.quizzes')">
+    <v-card :title="$t('quiz.quizzes')">
       <v-card-text>
         <v-btn
           color="primary"
           link
           :to="`/admin/courses/${courseId}/quiz/new-quiz`"
         >
-          {{ $t('quizzes.add-new-quiz') }}
+          {{ $t('quiz.add-quiz') }}
         </v-btn>
       </v-card-text>
 
@@ -59,7 +59,7 @@
             link
           >
             <v-list-item-title>
-              {{ $t('quizzes.quizz-title', [
+              {{ $t('quiz.quizz-title', [
                 index + 1,
               ]) }}
             </v-list-item-title>
@@ -82,7 +82,7 @@
         <v-card-subtitle
           v-else
         >
-          {{ $t('quizzes.no-quizzes-available') }}
+          {{ $t('quiz.no-quizzes-available') }}
         </v-card-subtitle>
       </v-card-text>
     </v-card>
