@@ -19,9 +19,9 @@
           {{ $t('admin.add-new-course') }}
         </v-btn>
       </v-card-text>
-    </v-card>
 
-    <v-card>
+      <v-divider />
+
       <v-list>
         <v-list-item
           v-for="course in courses"

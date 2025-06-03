@@ -9,7 +9,11 @@
     "field-required": "To pole jest wymagane",
     "users": "Użytkownicy",
     "save": "Zapisz",
-    "delete": "Usuń"
+    "saved-successfully": "Zapisano pomyślnie",
+    "delete": "Usuń",
+    "role": "Rola",
+    "admin": "Administrator",
+    "student": "Student"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -30,6 +34,7 @@
     "logout": "Wyloguj się"
   },
   "admin": {
+    "admin": "Admin",
     "admin-panel": "Admin Panel",
     "main-view": "Widok główny",
     "user-management": "Zarządzanie użytkownikami",
@@ -58,7 +63,8 @@
     "invalid-places-message": "Miejsce (od) musi być mniejsze lub równe miejscu (do)"
   },
   "users": {
-    "user-name-with-index": "{0} {1} ({2})"
+    "user-name-with-index": "{0} {1} ({2})",
+    "user-photo": "Zdjęcie użytkownika"
   },
   "courses": {
     "course-name": "Nazwa kursu",

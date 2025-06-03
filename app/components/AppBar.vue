@@ -43,7 +43,19 @@
         <v-list-item
           v-if="authUser"
           :title="authUser.email!"
+          :prepend-avatar="user?.photoUrl || '/default-avatar.webp'"
+          class="ml-4"
         >
+          <template #subtitle>
+            <v-chip
+              v-if="user?.role === 'admin'"
+              class="bg-green"
+              density="compact"
+            >
+              {{ $t('admin.admin').toUpperCase() }}
+            </v-chip>
+          </template>
+
           <v-menu
             activator="parent"
           >
