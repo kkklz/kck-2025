@@ -1,4 +1,4 @@
-import type { Answer } from './answer'
+import type { Answer, InputAnswer } from './answer'
 
 export interface Question {
   id: string
@@ -6,3 +6,5 @@ export interface Question {
   points: number
   answers: Answer[]
 }
+
+export type InputQuestion = Omit<Question, 'id' | 'answers'> & { answers: InputAnswer[] }

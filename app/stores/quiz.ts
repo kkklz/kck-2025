@@ -1,97 +1,93 @@
 import type { QueryError } from '@supabase/supabase-js'
+import type { Answer } from '@/types/answer'
+import type { Database } from '@/types/database.types'
+import type { Question } from '@/types/question'
 import type { Quiz } from '@/types/quiz'
-import type { Database } from '~/types/database.types'
-import {
-  answerToDbAnswer,
-  dbAnswerToAnswer,
-  dbPrizeToPrize,
-  dbQuestionToQuestion,
-  dbQuizToQuiz,
-  prizeToDbPrize,
-  questionToDbQuestion,
-} from '@/utils/convertTypes'
 
 export const useQuizStore = defineStore('quiz', () => {
-  const quiz: Ref<Quiz | null> = ref(null)
+  const quizzes: Ref<Quiz[] | null> = ref(null)
+  const currentQuiz: Ref<Quiz | null> = ref(null)
   const error: Ref<QueryError | null> = ref(null)
   const loading: Ref<boolean> = ref(false)
 
   const supabase = useSupabaseClient<Database>()
 
   const QUIZ_TABLE = 'quiz'
+  const QUESTION_TABLE = 'question'
+  const ANSWER_TABLE = 'answer'
 
-  async function addQuiz(newQuiz: Quiz) {
-    loading.value = true
-    error.value = null
-    try {
-      // Dodaj quiz (bez pytań i nagród)
-      const { prizes, questions } = newQuiz
-      // Najpierw dodaj nagrodę (jeśli nie istnieje)
-      let prizeId: string
-      if (prizes.length > 0) {
-        const mainPrize = prizes[0]
-        if (!mainPrize)
-          throw new Error('Quiz musi mieć przynajmniej jedną nagrodę')
-        const placeFrom = Array.isArray(mainPrize.place)
-          ? mainPrize.place[0]
-          : mainPrize.place
-        const placeTo = Array.isArray(mainPrize.place)
-          ? mainPrize.place[1]
-          : mainPrize.place
-        const { data: existingPrize, error: findPrizeError } = await supabase.from('prize').select('id').eq('placeFrom', placeFrom).eq('placeTo', placeTo).eq('reward', mainPrize.reward).maybeSingle()
-        if (findPrizeError)
-          throw findPrizeError
-        if (existingPrize) {
-          prizeId = existingPrize.id
-        }
-        else {
-          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert(prizeToDbPrize(mainPrize)).select().single()
-          if (prizeError || !prizeData)
-            throw prizeError
-          prizeId = prizeData.id
-        }
-      }
-      else {
-        throw new Error('Quiz musi mieć przynajmniej jedną nagrodę')
-      }
-      // Dodaj quiz
-      const quizInsert = {
-        description: newQuiz.description,
-        timeLimit: newQuiz.timeLimit,
-        maxAttempts: newQuiz.maxAttempts,
-        prizeId,
-      }
-      const { data: quizData, error: quizError } = await supabase.from(QUIZ_TABLE).insert(quizInsert).select().single()
-      if (quizError || !quizData)
-        throw quizError
-      const quizId = quizData.id
-      // Dodaj pytania i powiązania quiz_question
-      await Promise.all(questions.map(async (q) => {
-        // Dodaj pytanie jeśli nie istnieje
-        const { data: _questionData, error: questionError } = await supabase.from('question').insert(questionToDbQuestion(q)).select().single()
-        if (questionError && questionError.code !== '23505')
-          throw questionError // 23505 = duplicate
-        await supabase.from('quiz_question').insert({
-          quizId,
-          questionId: q.id,
-        })
-        // Dodaj odpowiedzi do pytania
-        await Promise.all(q.answers.map(async (a) => {
-          await supabase.from('answer').insert(answerToDbAnswer(a))
-          await supabase.from('question_answer').insert({
-            questionId: q.id,
-            answerId: a.id,
-          })
-        }))
-      }))
-      await fetchQuiz(quizId)
-    }
-    catch (err: any) {
-      error.value = err
-    }
-    finally {
-      loading.value = false
-    }
+  // --- Answer ---
+  async function addAnswer(answer: Answer, questionId: string): Promise<DBAnswer> {
+    const { data: answerData, error: answerError } = await supabase.from(ANSWER_TABLE).insert(answerToDbAnswer(answer, questionId)).select().single()
+    if (answerError)
+      throw answerError
+
+    return answerData
+  }
+
+  async function fetchAnswers(questionId: string): Promise<DBAnswer[]> {
+    const { data: answerData, error: answerError } = await supabase.from(ANSWER_TABLE).select('*').eq('questionId', questionId)
+    if (answerError)
+      throw answerError
+
+    return answerData
+  }
+
+  async function updateAnswer(answer: Answer, questionId: string): Promise<DBAnswer> {
+    const { data: answerData, error: answerError } = await supabase.from(ANSWER_TABLE).update(answerToDbAnswer(answer, questionId)).eq('id', answer.id).select().single()
+    if (answerError)
+      throw answerError
+
+    return answerData
+  }
+
+  async function deleteAnswer(answerId: string): Promise<void> {
+    const { error: answerError } = await supabase.from(ANSWER_TABLE).delete().eq('id', answerId)
+    if (answerError)
+      throw answerError
+  }
+
+  // --- Question ---
+  async function addQuestion(question: Question, quizId: string): Promise<DBQuestion> {
+    const { data: questionData, error: questionError } = await supabase.from(QUESTION_TABLE).insert(questionToDbQuestion(question, quizId)).select().single()
+    if (questionError)
+      throw questionError
+
+    return questionData
+  }
+
+  async function fetchQuestions(quizId: string): Promise<DBQuestion[]> {
+    const { data: questionData, error: questionError } = await supabase.from(QUESTION_TABLE).select('*').eq('quizId', quizId)
+    if (questionError)
+      throw questionError
+
+    return questionData
+  }
+
+  async function updateQuestion(question: Question, quizId: string): Promise<DBQuestion> {
+    const { data: questionData, error: questionError } = await supabase.from(QUESTION_TABLE).update(questionToDbQuestion(question, quizId)).eq('id', question.id).select().single()
+    if (questionError)
+      throw questionError
+
+    return questionData
+  }
+
+  async function deleteQuestion(questionId: string): Promise<void> {
+    const { error: questionError } = await supabase.from(QUESTION_TABLE).delete().eq('id', questionId)
+    if (questionError)
+      throw questionError
+  }
+
+  // --- Quiz ---
+  async function addQuiz(q: Omit<Quiz, 'courseId'>, courseId: string): Promise<DBQuiz> {
+    const { data: quizData, error: quizError } = await supabase.from(QUIZ_TABLE).insert(quizToDbQuiz(q, courseId)).select().single()
+    if (quizError)
+      throw quizError
+
+    quizzes.value = [...(quizzes.value || []), dbQuizToQuiz(quizData, [])]
+    currentQuiz.value = dbQuizToQuiz(quizData, [])
+
+    return quizData
   }
 
   async function fetchQuiz(quizId: string) {
@@ -103,14 +99,9 @@ export const useQuizStore = defineStore('quiz', () => {
         .from(QUIZ_TABLE)
         .select(`
           *,
-          prize:prizeId(*),
-          quiz_question:quiz_question(
-            question:questionId(
-              *,
-              question_answer:question_answer(
-                answer:answerId(*)
-              )
-            )
+          question(
+            *,
+            answer(*)
           )
         `)
         .eq('id', quizId)
@@ -118,67 +109,17 @@ export const useQuizStore = defineStore('quiz', () => {
       if (quizError || !quizData)
         throw quizError
       // Mapowanie do typu Quiz
-      const questions = (quizData.quiz_question || []).map((qq: any) => {
-        const q = qq.question
-        const answers = (q.question_answer || []).map((qa: any) => dbAnswerToAnswer(qa.answer))
+      const questions = (quizData.question || []).map((q) => {
+        const answers = (q.answer || []).map(a => dbAnswerToAnswer(a))
 
         return dbQuestionToQuestion(q, answers)
       })
-      const prizes = quizData.prize
-        ? [dbPrizeToPrize(quizData.prize)]
-        : []
-      quiz.value = dbQuizToQuiz(quizData, prizes, questions)
+      const quiz = dbQuizToQuiz(quizData, questions)
+
+      currentQuiz.value = quiz
     }
     catch (err: any) {
       error.value = err
-      quiz.value = null
-    }
-    finally {
-      loading.value = false
-    }
-  }
-
-  async function fetchQuizzes() {
-    loading.value = true
-    error.value = null
-    try {
-      // Pobierz wszystkie quizy z powiązaniami w jednym zapytaniu
-      const { data: quizzes, error: quizError } = await supabase
-        .from(QUIZ_TABLE)
-        .select(`
-          *,
-          prize:prizeId(*),
-          quiz_question:quiz_question(
-            question:questionId(
-              *,
-              question_answer:question_answer(
-                answer:answerId(*)
-              )
-            )
-          )
-        `)
-      if (quizError)
-        throw quizError
-      const quizzesWithDetails = (quizzes || []).map((quizData: any) => {
-        const questions = (quizData.quiz_question || []).map((qq: any) => {
-          const q = qq.question
-          const answers = (q.question_answer || []).map((qa: any) => dbAnswerToAnswer(qa.answer))
-
-          return dbQuestionToQuestion(q, answers)
-        })
-        const prizes = quizData.prize
-          ? [dbPrizeToPrize(quizData.prize)]
-          : []
-
-        return dbQuizToQuiz(quizData, prizes, questions)
-      })
-
-      return quizzesWithDetails
-    }
-    catch (err: any) {
-      error.value = err
-
-      return []
     }
     finally {
       loading.value = false
@@ -190,62 +131,36 @@ export const useQuizStore = defineStore('quiz', () => {
     error.value = null
     try {
       // Aktualizuj quiz
-      const { description, timeLimit, maxAttempts, prizes, questions } = updatedQuiz
-      let prizeId: string
-      if (prizes.length > 0) {
-        const mainPrize = prizes[0]
-        if (!mainPrize)
-          throw new Error('Quiz musi mieć przynajmniej jedną nagrodę')
-        const placeFrom = Array.isArray(mainPrize.place)
-          ? mainPrize.place[0]
-          : mainPrize.place
-        const placeTo = Array.isArray(mainPrize.place)
-          ? mainPrize.place[1]
-          : mainPrize.place
-        const { data: existingPrize, error: findPrizeError } = await supabase.from('prize').select('id').eq('placeFrom', placeFrom).eq('placeTo', placeTo).eq('reward', mainPrize.reward).maybeSingle()
-        if (findPrizeError)
-          throw findPrizeError
-        if (existingPrize) {
-          prizeId = existingPrize.id
-        }
-        else {
-          const { data: prizeData, error: prizeError } = await supabase.from('prize').insert(prizeToDbPrize(mainPrize)).select().single()
-          if (prizeError || !prizeData)
-            throw prizeError
-          prizeId = prizeData.id
-        }
-      }
-      else {
-        throw new Error('Quiz musi mieć przynajmniej jedną nagrodę')
-      }
+      const { description, timeLimit, maxAttempts, questions: newQuestions } = updatedQuiz
       const { error: quizError } = await supabase.from(QUIZ_TABLE).update({
         description,
         timeLimit,
         maxAttempts,
-        prizeId,
       }).eq('id', quizId)
       if (quizError)
         throw quizError
-      // Aktualizuj pytania (tu można rozwinąć logikę do pełnej synchronizacji)
-      // Na razie: usuwamy stare powiązania i dodajemy nowe
-      await supabase.from('quiz_question').delete().eq('quizId', quizId)
-      await Promise.all(questions.map(async (q) => {
-        const { data: _questionData, error: questionError } = await supabase.from('question').upsert(questionToDbQuestion(q))
-        if (questionError)
-          throw questionError
-        await supabase.from('quiz_question').insert({
-          quizId,
-          questionId: q.id,
-        })
-        await supabase.from('question_answer').delete().eq('questionId', q.id)
-        await Promise.all(q.answers.map(async (a) => {
-          await supabase.from('answer').upsert(answerToDbAnswer(a))
-          await supabase.from('question_answer').insert({
-            questionId: q.id,
-            answerId: a.id,
-          })
-        }))
+
+      // Pobierz aktualny quiz z bazy (z pytaniami i odpowiedziami)
+      await fetchQuiz(quizId)
+      const oldQuestions = currentQuiz.value?.questions || []
+
+      // --- USUWANIE PYTAŃ ---
+      await Promise.all(oldQuestions.map(async (oldQ) => {
+        if (!newQuestions.find(q => q.id === oldQ.id)) {
+          await deleteQuestion(oldQ.id)
+        }
       }))
+
+      // --- DODAWANIE/EDYCJA PYTAŃ I ODPOWIEDZI ---
+      await Promise.all(newQuestions.map(async (newQ) => {
+        if (oldQuestions.find(q => q.id === newQ.id)) {
+          await updateQuestion(newQ, quizId)
+        }
+        else {
+          await addQuestion(newQ, quizId)
+        }
+      }))
+
       await fetchQuiz(quizId)
     }
     catch (err: any) {
@@ -261,12 +176,11 @@ export const useQuizStore = defineStore('quiz', () => {
     error.value = null
     try {
       // Usuń powiązania quiz_question
-      await supabase.from('quiz_question').delete().eq('quizId', quizId)
       // Usuń quiz
       const { error: quizError } = await supabase.from(QUIZ_TABLE).delete().eq('id', quizId)
       if (quizError)
         throw quizError
-      quiz.value = null
+      currentQuiz.value = null
     }
     catch (err: any) {
       error.value = err
@@ -277,18 +191,27 @@ export const useQuizStore = defineStore('quiz', () => {
   }
 
   function clearStore() {
-    quiz.value = null
+    quizzes.value = null
+    currentQuiz.value = null
     error.value = null
     loading.value = false
   }
 
   return {
-    quiz,
+    quizzes,
+    currentQuiz,
     error,
     loading,
+    addAnswer,
+    fetchAnswers,
+    updateAnswer,
+    deleteAnswer,
+    addQuestion,
+    fetchQuestions,
+    updateQuestion,
+    deleteQuestion,
     addQuiz,
     fetchQuiz,
-    fetchQuizzes,
     updateQuiz,
     deleteQuiz,
     clearStore,
