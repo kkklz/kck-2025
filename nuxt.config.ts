@@ -21,6 +21,15 @@ export default defineNuxtConfig({
       icons: {
         defaultSet: 'mdi',
       },
+      theme: {
+        themes: {
+          light: {
+            colors: {
+              background: '#FAFAFA',
+            },
+          },
+        },
+      },
     },
   },
 

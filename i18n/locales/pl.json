@@ -36,6 +36,7 @@
     "welcome": "Witaj {name}!",
     "registered-users-number": "Ilosc zarejestrowanych uzytkownikow:",
     "courses-number": "Ilosc kursow:",
+    "quizzes-number": "Ilosc quizow:",
     "back-to-home": "Wróć na stronę główną",
     "statistics": "Statystyki",
     "quizes-number": "Ilość quizów: {0}",

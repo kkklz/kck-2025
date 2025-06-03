@@ -112,7 +112,7 @@ watch(user, async (newUser) => {
   if (!currentCourse.value)
     return
 
-  breadcrumbs.value.push({
+  breadcrumbs.value[1] = ({
     title: currentCourse.value.name,
   })
 }, { immediate: true })

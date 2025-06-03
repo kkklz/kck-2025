@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar>
+  <v-app-bar elevation="1">
     <v-app-bar-title class="pa-0 inline-flex items-center">
       <NuxtLink
         to="/"

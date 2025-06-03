@@ -6,6 +6,7 @@
       v-model="newName"
       :label="$t('courses.course-name')"
       :rules="notEmptyRule"
+      prepend-icon="mdi-pen"
       required
     />
 
@@ -13,6 +14,7 @@
       v-model="newDescription"
       :label="$t('courses.course-description')"
       :rules="notEmptyRule"
+      prepend-icon="mdi-pen"
       required
     />
 

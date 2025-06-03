@@ -1,5 +1,8 @@
 <template>
-  <v-card class="mb-4 pa-4">
+  <v-card
+    class="mb-4 py-4"
+    elevation="0"
+  >
     <div class="mb-2 flex gap-2 items-center">
       <v-text-field
         v-model="question.content"

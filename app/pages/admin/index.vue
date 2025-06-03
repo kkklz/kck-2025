@@ -2,37 +2,61 @@
   <div
     class="pa-4 gap-4 grid"
   >
-    <v-card>
+    <v-card class="pa-4">
       <v-card-title class="!text-4xl">
         {{ $t('admin.main-view') }}
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="!text-2xl">
         {{ $t('admin.welcome', {'name': user?.firstName}) }}
       </v-card-text>
 
-      <v-card-title>
-        {{ $t('admin.statistics') }}
-      </v-card-title>
+      <v-divider />
 
-      <v-card-text>
-        {{ $t('admin.registered-users-number') }}
-        <v-chip
-          color="green"
-          label
-        >
-          {{ registeredUsersNumber }}
-        </v-chip>
+      <v-skeleton-loader
+        class="!block"
+        type="article"
+        :loading="loading"
+      >
+        <v-list density="compact">
+          <v-list-item
+            class="text-2xl"
+            prepend-icon="mdi-chart-bar"
+          >
+            {{ $t('admin.statistics') }}
+          </v-list-item>
 
-        <br>
-        {{ $t('admin.courses-number') }}
-        <v-chip
-          color="green"
-          label
-        >
-          {{ courseNumber }}
-        </v-chip>
-      </v-card-text>
+          <v-list-item prepend-icon="mdi-circle-small">
+            {{ $t('admin.registered-users-number') }}
+            <v-chip
+              class="bg-green"
+              label
+            >
+              {{ registeredUsersNumber }}
+            </v-chip>
+          </v-list-item>
+
+          <v-list-item prepend-icon="mdi-circle-small">
+            {{ $t('admin.courses-number') }}
+            <v-chip
+              class="my-2 bg-secondary"
+              label
+            >
+              {{ courseNumber }}
+            </v-chip>
+          </v-list-item>
+
+          <v-list-item prepend-icon="mdi-circle-small">
+            {{ $t('admin.quizzes-number') }}
+            <v-chip
+              class="bg-green"
+              label
+            >
+              {{ quizNumber }}
+            </v-chip>
+          </v-list-item>
+        </v-list>
+      </v-skeleton-loader>
     </v-card>
 
     <v-btn
@@ -51,8 +75,20 @@ definePageMeta({
 })
 
 const userStore = useUserStore()
-const { user } = storeToRefs(userStore)
+const courseStore = useCourseStore()
+const { user, users } = storeToRefs(userStore)
+const { courses } = storeToRefs(courseStore)
+const registeredUsersNumber = ref(0)
+const courseNumber = ref(0)
+const quizNumber = ref(0)
+const loading = ref(true)
 
-const courseNumber = ref(13)
-const registeredUsersNumber = ref(5)
+onBeforeMount(async () => {
+  await userStore.fetchUsers()
+  await courseStore.fetchCourses('all')
+  registeredUsersNumber.value = users.value.length
+  courseNumber.value = courses.value.length
+  quizNumber.value = courses.value.reduce((acc, course) => acc + course.quizzes.length, 0)
+  loading.value = false
+})
 </script>
