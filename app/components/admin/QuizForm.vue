@@ -67,22 +67,33 @@
           @remove="removeQuestionById(qId)"
         />
 
-        <v-btn
-          class="mr-4 mt-4"
-          variant="plain"
-          :to="`/admin/courses/${courseId}`"
-        >
-          {{ $t('universal.back') }}
-        </v-btn>
+        <div class="flex">
+          <v-btn
+            class="mr-4 mt-4"
+            variant="plain"
+            :to="`/admin/courses/${courseId}`"
+          >
+            {{ $t('universal.back') }}
+          </v-btn>
 
-        <v-btn
-          class="mt-4"
-          color="primary"
-          type="submit"
-          :loading="loading"
-        >
-          {{ $t('universal.save') }}
-        </v-btn>
+          <v-btn
+            class="mt-4"
+            color="primary"
+            type="submit"
+            :loading="loading"
+          >
+            {{ $t('universal.save') }}
+          </v-btn>
+
+          <v-btn
+            v-if="quizId"
+            class="ml-auto mt-4 bg-red"
+            :loading="loading"
+            @click="handleDelete"
+          >
+            {{ $t('universal.delete') }}
+          </v-btn>
+        </div>
       </v-form>
     </v-card>
   </div>
@@ -194,5 +205,15 @@ async function handleSubmit() {
   if (!error.value) {
     navigateTo(`/admin/courses/${courseId}`)
   }
+}
+
+function handleDelete() {
+  setTimeout(async () => {
+    if (!quizId) {
+      return
+    }
+    await quizStore.deleteQuiz(quizId)
+    await navigateTo(`/admin/courses/${courseId}`)
+  }, 0)
 }
 </script>

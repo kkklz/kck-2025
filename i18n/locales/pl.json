@@ -8,7 +8,8 @@
     "back": "Powrót",
     "field-required": "To pole jest wymagane",
     "users": "Użytkownicy",
-    "save": "Zapisz"
+    "save": "Zapisz",
+    "delete": "Usuń"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",

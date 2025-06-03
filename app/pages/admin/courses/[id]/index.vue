@@ -4,22 +4,16 @@
   >
     <v-card
       v-if="currentCourse"
-      class="py-2"
+      class="pa-4"
     >
       <v-breadcrumbs
         :items="breadcrumbs"
       />
 
-      <v-card-title class="!text-4xl">
+      <v-card-title class="mb-8 !text-4xl">
         {{ $t('universal.settings') }}
       </v-card-title>
 
-      <v-card-subtitle>
-        {{ currentCourse.name }}
-      </v-card-subtitle>
-    </v-card>
-
-    <v-card class="pa-4">
       <AdminCourseForm
         v-if="currentCourse"
         :id="currentCourse.id"

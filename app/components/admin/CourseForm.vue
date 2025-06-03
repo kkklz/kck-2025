@@ -35,25 +35,37 @@
 
     <AdminUsersSelect v-model="newUsers" />
 
-    <v-btn
-      class="m-2"
-      link
-      to="/admin/courses"
-      variant="plain"
-    >
-      {{ $t('universal.back') }}
-    </v-btn>
+    <div class="flex">
+      <v-btn
+        class="m-2"
+        link
+        to="/admin/courses"
+        variant="plain"
+      >
+        {{ $t('universal.back') }}
+      </v-btn>
 
-    <v-btn
-      variant="tonal"
-      type="submit"
-      class="m-2"
-      :loading="loading"
-    >
-      {{ props.mode === 'new'
-        ? $t('admin.add-new-course')
-        : $t('admin.save-changes') }}
-    </v-btn>
+      <v-btn
+        variant="tonal"
+        type="submit"
+        class="m-2"
+        :loading="loading"
+      >
+        {{ props.mode === 'new'
+          ? $t('admin.add-new-course')
+          : $t('admin.save-changes') }}
+      </v-btn>
+
+      <v-btn
+        v-if="props.mode === 'edit'"
+        variant="tonal"
+        class="m-2 ml-auto bg-red"
+        :loading="loading"
+        @click="handleDelete"
+      >
+        {{ $t('universal.delete') }}
+      </v-btn>
+    </div>
   </v-form>
 </template>
 
@@ -130,6 +142,17 @@ function handleSubmit() {
     newUsers.value = []
     newPrizes.value = []
 
+    await courseStore.fetchCourses('all')
+    await navigateTo('/admin/courses')
+  }, 0)
+}
+
+function handleDelete() {
+  setTimeout(async () => {
+    if (!props.id) {
+      return
+    }
+    await courseStore.deleteCourse(props.id)
     await courseStore.fetchCourses('all')
     await navigateTo('/admin/courses')
   }, 0)
