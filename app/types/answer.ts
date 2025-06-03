@@ -3,3 +3,5 @@ export interface Answer {
   answer: string
   correct: boolean
 }
+
+export type InputAnswer = Omit<Answer, 'id'>

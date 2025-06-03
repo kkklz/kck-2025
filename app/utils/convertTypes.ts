@@ -59,7 +59,6 @@ export function dbAnswerToAnswer(dbAnswer: DBAnswer): Answer {
 
 export function answerToDbAnswer(answer: Answer, questionId: string): DBAnswerInsert {
   return {
-    id: answer.id,
     answer: answer.answer,
     correct: answer.correct,
     questionId,
@@ -78,7 +77,6 @@ export function dbQuestionToQuestion(dbQuestion: DBQuestion, answers: Answer[]):
 
 export function questionToDbQuestion(question: Question, quizId: string): DBQuestionInsert {
   return {
-    id: question.id,
     content: question.content,
     points: question.points,
     quizId,
@@ -96,9 +94,8 @@ export function dbQuizToQuiz(dbQuiz: DBQuiz, questions: Question[]): Quiz {
   }
 }
 
-export function quizToDbQuiz(quiz: Quiz, courseId: string): DBQuizInsert {
+export function quizToDbQuiz(quiz: Omit<Quiz, 'courseId'>, courseId: string): DBQuizInsert {
   return {
-    id: quiz.id,
     description: quiz.description,
     timeLimit: quiz.timeLimit,
     maxAttempts: quiz.maxAttempts,

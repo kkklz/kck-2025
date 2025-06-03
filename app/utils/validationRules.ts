@@ -54,6 +54,14 @@ export function useValidationRules() {
     return t('universal.field-required')
   }]
 
+  const quizInputRules = [(value: string) => {
+    if (value && value.trim() !== '') {
+      return true
+    }
+
+    return t('universal.field-required')
+  }]
+
   return {
     emailRules,
     passwordRules,
@@ -61,5 +69,6 @@ export function useValidationRules() {
     lastNameRules,
     indexNumberRules,
     notEmptyRule,
+    quizInputRules,
   }
 }

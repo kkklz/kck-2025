@@ -7,7 +7,8 @@
     "settings": "Ustawienia",
     "back": "Powrót",
     "field-required": "To pole jest wymagane",
-    "users": "Użytkownicy"
+    "users": "Użytkownicy",
+    "save": "Zapisz"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -39,7 +40,8 @@
     "statistics": "Statystyki",
     "quizes-number": "Ilość quizów: {0}",
     "signed-users-number": "Ilość zapisanych użytkowników: {0}",
-    "add-new-course": "Dodaj nowy kurs"
+    "add-new-course": "Dodaj nowy kurs",
+    "add-quiz": "Dodaj quiz"
   },
   "prizes": {
     "prizes": "Nagrody",
@@ -56,5 +58,19 @@
   "courses": {
     "course-name": "Nazwa kursu",
     "course-description": "Opis kursu"
+  },
+  "quiz": {
+    "quiz": "Quiz",
+    "description": "Opis",
+    "time-limit": "Limit czasu (w minutach)",
+    "max-attempts": "Maksymalna ilość podejść",
+    "questions": "Pytania",
+    "question-content": "Treść pytania",
+    "points": "Ilość punktów",
+    "answers": "Odpowiedzi",
+    "answer": "Odpowiedź",
+    "correct": "Poprawna odpowiedź",
+    "edit-quiz": "Edytuj quiz",
+    "add-quiz": "Utwórz quiz"
   }
 }
