@@ -19,6 +19,14 @@
     max-width="1200"
     class="mx-auto mt-12 pa-8"
   >
+    <v-btn
+      variant="plain"
+      class="!pa-4"
+      @click="useRouter().back()"
+    >
+      {{ $t('universal.back') }}
+    </v-btn>
+
     <v-card-title class="!text-4xl">
       {{ $t('universal.settings') }}
     </v-card-title>
@@ -132,7 +140,8 @@ function handleSubmit() {
       newPhoto.value || undefined,
     )
     submitted.value = true
-    await userStore.fetchUser(props.user.id)
+    if (user.value)
+      await userStore.fetchUser(user.value.id)
   }, 0)
 }
 </script>
