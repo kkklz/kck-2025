@@ -43,16 +43,19 @@ export interface Database {
           description: string
           id: string
           name: string
+          photoUrl: string | null
         }
         Insert: {
           description: string
           id?: string
           name: string
+          photoUrl?: string | null
         }
         Update: {
           description?: string
           id?: string
           name?: string
+          photoUrl?: string | null
         }
         Relationships: []
       }

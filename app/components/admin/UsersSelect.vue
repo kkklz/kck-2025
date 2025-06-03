@@ -44,14 +44,18 @@
 import type { User } from '~/types/user'
 
 const selectedUsers = defineModel<User[]>({ required: true })
-
 const userStore = useUserStore()
 const { user, users, loading: usersLoading } = storeToRefs(userStore)
 
 const selectedUsersIds = ref<string[]>([])
 
 watch(selectedUsersIds, () => {
-  selectedUsers.value = users.value.filter(u => selectedUsersIds.value.includes(u.id))
+  if (selectedUsersIds.value.length === 0 && selectedUsers.value.length !== 0) {
+    selectedUsersIds.value = selectedUsers.value.map(u => u.id)
+  }
+  else {
+    selectedUsers.value = users.value.filter(u => selectedUsersIds.value.includes(u.id))
+  }
 }, { immediate: true })
 
 watch(user, async (newUser) => {
@@ -59,5 +63,5 @@ watch(user, async (newUser) => {
     return
 
   await userStore.fetchUsers()
-})
+}, { immediate: true })
 </script>

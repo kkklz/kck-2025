@@ -1,5 +1,5 @@
 import type { Answer } from '@/types/answer'
-import type { Tables, TablesInsert } from '@/types/database.types'
+import type { Tables, TablesInsert, TablesUpdate } from '@/types/database.types'
 import type { Prize } from '@/types/prize'
 import type { Question } from '@/types/question'
 import type { Quiz } from '@/types/quiz'
@@ -14,6 +14,9 @@ export type DBPrize = Tables<'prize'>
 export type DBQuestion = Tables<'question'>
 export type DBAnswer = Tables<'answer'>
 
+export type DBCourseUpdate = TablesUpdate<'course'>
+
+export type DBCourseInsert = TablesInsert<'course'>
 export type DBQuizInsert = TablesInsert<'quiz'>
 export type DBPrizeInsert = TablesInsert<'prize'>
 export type DBQuestionInsert = TablesInsert<'question'>
@@ -40,7 +43,6 @@ export function prizeToDbPrize(prize: Prize, courseId: string): DBPrizeInsert {
     : prize.place
 
   return {
-    id: prize.id,
     placeFrom,
     placeTo,
     reward: prize.reward,
@@ -119,7 +121,7 @@ export function dbCourseToCourse(
   prizes: Prize[],
   users: User[],
 ): Course {
-  // todo: photo + ranking
+  // todo: ranking
   return {
     id: dbCourse.id,
     name: dbCourse.name,
@@ -127,7 +129,22 @@ export function dbCourseToCourse(
     quizzes,
     prizes,
     users,
+    photoUrl: dbCourse.photoUrl || undefined,
   }
+}
+
+export function courseToDbCourse(course: Partial<Course>): DBCourseInsert {
+  const data: DBCourseInsert = {
+    name: course.name || '',
+    description: course.description || '',
+  }
+
+  if (course.id !== undefined)
+    data.id = course.id
+  if (course.photoUrl !== undefined)
+    data.photoUrl = course.photoUrl
+
+  return data
 }
 
 // --- User ---

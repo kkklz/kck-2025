@@ -41,7 +41,8 @@
     "quizes-number": "Ilość quizów: {0}",
     "signed-users-number": "Ilość zapisanych użytkowników: {0}",
     "add-new-course": "Dodaj nowy kurs",
-    "add-quiz": "Dodaj quiz"
+    "add-quiz": "Dodaj quiz",
+    "save-changes": "Zapisz zmiany"
   },
   "prizes": {
     "prizes": "Nagrody",
@@ -57,7 +58,14 @@
   },
   "courses": {
     "course-name": "Nazwa kursu",
-    "course-description": "Opis kursu"
+    "course-description": "Opis kursu",
+    "course-photo": "Zdjęcie kursu"
+  },
+  "quizzes": {
+    "quizzes": "Quizy",
+    "add-new-quiz": "Dodaj nowy quiz",
+    "quizz-title": "Quiz #{0}",
+    "no-quizzes-available": "Brak dostepnych quizów."
   },
   "quiz": {
     "quiz": "Quiz",

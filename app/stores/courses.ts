@@ -73,6 +73,7 @@ export const useCourseStore = defineStore('course', () => {
   async function fetchCourse(id: string) {
     error.value = null
     loading.value = true
+    currentCourse.value = null
     let query
     if (!user.value)
       return
@@ -129,16 +130,13 @@ export const useCourseStore = defineStore('course', () => {
   }
 
   // Bez quizzes, bo zawsze tworzymy pusty kurs
-  async function addCourse(course: Omit<Course, 'id' | 'quizzes'>) {
+  async function addOrEditCourse(course: Partial<Course>, coursePhoto?: File) {
     error.value = null
     loading.value = true
 
     try {
       const { data, error: courseError } = await supabase.from(COURSE_TABLE)
-        .insert({
-          name: course.name,
-          description: course.description,
-        })
+        .upsert(courseToDbCourse(course))
         .select()
         .single()
 
@@ -149,37 +147,55 @@ export const useCourseStore = defineStore('course', () => {
         throw new Error('Course not created')
 
       const id = data.id
-      const dbCourseUsers = course.users.map((u) => {
-        return {
-          courseId: id,
-          userId: u.id,
-        }
-      })
-      const dbPrizes = course.prizes.map((prize) => {
-        return {
-          placeFrom: Array.isArray(prize.place)
-            ? prize.place[0]
-            : prize.place,
-          placeTo: Array.isArray(prize.place)
-            ? prize.place[1]
-            : prize.place,
-          reward: prize.reward,
-          courseId: id,
-        }
-      })
 
-      if (dbCourseUsers) {
+      // Usuniecie wszystkich uzytkownikow przypisanych do kursu
+      const { error: deleteUsersError } = await supabase.from(COURSE_USER_TABLE)
+        .delete()
+        .eq('courseId', id)
+      if (deleteUsersError)
+        throw deleteUsersError
+      // Usuniecie wszystkich nagrod przypisanych do kursu
+      const { error: deletePrizesError } = await supabase.from(PRIZE_TABLE)
+        .delete()
+        .eq('courseId', id)
+      if (deletePrizesError)
+        throw deletePrizesError
+
+      if (course.users && course.users.length > 0) {
+        const dbCourseUsers = course.users.map((u) => {
+          return {
+            courseId: id,
+            userId: u.id,
+          }
+        })
         const { error: courseUserError } = await supabase.from(COURSE_USER_TABLE)
           .insert(dbCourseUsers)
         if (courseUserError)
           throw courseUserError
       }
 
-      if (dbPrizes) {
+      if (course.prizes && course.prizes.length > 0) {
+        const dbPrizes = course.prizes.map(prize => prizeToDbPrize(prize, id))
+
         const { error: prizeError } = await supabase.from(PRIZE_TABLE)
           .insert(dbPrizes)
         if (prizeError)
           throw prizeError
+      }
+
+      if (coursePhoto) {
+        const { error: photoError } = await supabase.storage.from('media')
+          .upload(`courses/${id}`, coursePhoto, {
+            upsert: true,
+          })
+        if (photoError)
+          throw photoError
+
+        const { data: photoData } = supabase.storage.from('media').getPublicUrl(`courses/${id}`)
+
+        await supabase.from(COURSE_TABLE)
+          .update({ photoUrl: photoData.publicUrl })
+          .eq('id', id)
       }
     }
 
@@ -198,6 +214,6 @@ export const useCourseStore = defineStore('course', () => {
     loading,
     fetchCourses,
     fetchCourse,
-    addCourse,
+    addOrEditCourse,
   }
 })
