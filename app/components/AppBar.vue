@@ -35,6 +35,7 @@
           v-if="user?.role === 'admin'"
           link
           to="/admin"
+          variant="plain"
         >
           {{ $t('admin.admin-panel') }}
         </v-list-item>

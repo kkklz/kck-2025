@@ -1,79 +1,91 @@
 <template>
-  <v-card
-    class="mx-auto mt-12"
-    max-width="800"
-    :title="title"
+  <div
+    class="pa-4 gap-4 grid"
   >
-    <v-alert
-      v-if="error !== null"
-      type="error"
-    >
-      {{ error }}
-    </v-alert>
-
-    <v-form
-      class="px-6 pb-6"
-      validate-on="lazy"
-      @submit.prevent="handleSubmit"
-    >
-      <h2 class="text-xl mb-2">
-        {{ $t('quiz.quiz') }}
-      </h2>
-
-      <v-textarea
-        v-model="description"
-        required
-        :rules="quizInputRules"
-        :label="$t('quiz.description')"
-        auto-grow
+    <v-card class="py-2">
+      <v-breadcrumbs
+        :items="breadcrumbs"
       />
 
-      <v-number-input
-        v-model="timeLimitS"
-        :label="$t('quiz.time-limit')"
-        :precision="0"
-        control-variant="split"
-        :min="1"
-      />
+      <v-card-title class="!text-4xl">
+        {{ title }}
+      </v-card-title>
 
-      <v-number-input
-        v-model="maxAttempts"
-        :label="$t('quiz.max-attempts')"
-        :precision="0"
-        control-variant="split"
-        :min="1"
-      />
+      <v-alert
+        v-if="error !== null"
+        type="error"
+      >
+        {{ error.message }}
+      </v-alert>
 
-      <div class="mb-2 mt-6 flex items-center justify-between">
-        <h2 class="text-xl">
-          {{ $t('quiz.questions') }}
-        </h2>
+      <v-form
+        class="px-6 py-6"
+        validate-on="lazy"
+        @submit.prevent="handleSubmit"
+      >
+        <v-textarea
+          v-model="description"
+          required
+          :rules="quizInputRules"
+          :label="$t('quiz.description')"
+          auto-grow
+        />
+
+        <v-number-input
+          v-model="timeLimitS"
+          :label="$t('quiz.time-limit')"
+          :precision="0"
+          control-variant="split"
+          :min="1"
+        />
+
+        <v-number-input
+          v-model="maxAttempts"
+          :label="$t('quiz.max-attempts')"
+          :precision="0"
+          control-variant="split"
+          :min="1"
+        />
+
+        <div class="mb-2 mt-6 flex items-center justify-between">
+          <h2 class="text-2xl">
+            {{ $t('quiz.questions') }}
+          </h2>
+
+          <v-btn
+            icon="mdi-plus"
+            variant="text"
+            @click="addQuestion"
+          />
+        </div>
+
+        <QuizQuestionEditor
+          v-for="(question, qId) in questions"
+          :key="qId"
+          :model-value="question"
+          @update:model-value="updateQuestion(qId, $event)"
+          @remove="removeQuestionById(qId)"
+        />
 
         <v-btn
-          icon="mdi-plus"
-          variant="text"
-          @click="addQuestion"
-        />
-      </div>
+          class="mr-4 mt-4"
+          variant="plain"
+          :to="`/admin/courses/${courseId}`"
+        >
+          {{ $t('universal.back') }}
+        </v-btn>
 
-      <QuizQuestionEditor
-        v-for="(question, qId) in questions"
-        :key="qId"
-        :model-value="question"
-        @update:model-value="updateQuestion(qId, $event)"
-        @remove="removeQuestionById(qId)"
-      />
-
-      <v-btn
-        class="mt-4"
-        color="primary"
-        type="submit"
-        :loading="loading"
-      >
-        {{ $t('universal.save') }}
-      </v-btn>
-    </v-form>
-  </v-card>
+        <v-btn
+          class="mt-4"
+          color="primary"
+          type="submit"
+          :loading="loading"
+        >
+          {{ $t('universal.save') }}
+        </v-btn>
+      </v-form>
+    </v-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -92,10 +104,30 @@ const loading = ref(false)
 const quizStore = useQuizStore()
 const { error, currentQuiz } = storeToRefs(quizStore)
 const route = useRoute()
+const courseId = route.params.id as string
 
+const { t } = useI18n()
 const { quizInputRules } = useValidationRules()
 
+const breadcrumbs = ref<{ title: string, to?: string }[]>()
+
 onBeforeMount(async () => {
+  breadcrumbs.value = [
+    {
+      title: t('admin.course-management'),
+      to: '/admin/courses',
+    },
+    {
+      title: t('admin.course-settings'),
+      to: `/admin/courses/${courseId}`,
+    },
+    {
+      title: quizId
+        ? t('admin.quiz-settings')
+        : t('admin.add-quiz'),
+    },
+  ]
+
   if (quizId !== undefined) {
     await quizStore.fetchQuiz(quizId)
 
@@ -133,8 +165,6 @@ async function handleSubmit() {
   error.value = null
   if (!description.value.trim())
     return
-
-  const courseId = route.params.id as string
 
   if (quizId !== undefined) {
     await quizStore.updateQuiz(quizId, { id: quizId, description: description.value, maxAttempts: maxAttempts.value, questions: questions.value, timeLimit: timeLimit.value })

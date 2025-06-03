@@ -34,9 +34,18 @@
     <AdminUsersSelect v-model="newUsers" />
 
     <v-btn
+      class="m-2"
+      link
+      to="/admin/courses"
+      variant="plain"
+    >
+      {{ $t('universal.back') }}
+    </v-btn>
+
+    <v-btn
       variant="tonal"
       type="submit"
-      class="mt-4"
+      class="m-2"
       :loading="loading"
     >
       {{ props.mode === 'new'

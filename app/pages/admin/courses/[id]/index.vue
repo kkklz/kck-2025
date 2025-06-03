@@ -12,13 +12,6 @@
 
       <v-card-title class="!text-4xl">
         {{ $t('universal.settings') }}
-        <v-btn
-          class="m-2"
-          link
-          to="/admin/courses"
-        >
-          {{ $t('universal.back') }}
-        </v-btn>
       </v-card-title>
 
       <v-card-subtitle>
@@ -44,7 +37,7 @@
         <v-btn
           color="primary"
           link
-          :to="`/admin/courses/${courseId}/quiz/new-quiz`"
+          :to="`/admin/courses/${courseId}/new-quiz`"
         >
           {{ $t('quiz.add-quiz') }}
         </v-btn>
@@ -72,6 +65,7 @@
               <v-btn
                 link
                 :to="`/admin/courses/${courseId}/quiz/${quiz.id}`"
+                variant="plain"
               >
                 {{ $t('universal.settings') }}
               </v-btn>

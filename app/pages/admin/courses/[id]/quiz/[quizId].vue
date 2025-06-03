@@ -5,7 +5,11 @@
   />
 </template>
 
-<script setup lang="tsx">
+<script setup lang="ts">
+definePageMeta({
+  layout: 'admin',
+})
+
 const route = useRoute()
 
 const quizId = route.params.quizId as string

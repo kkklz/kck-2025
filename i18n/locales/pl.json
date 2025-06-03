@@ -42,7 +42,9 @@
     "signed-users-number": "Ilość zapisanych użytkowników: {0}",
     "add-new-course": "Dodaj nowy kurs",
     "add-quiz": "Dodaj quiz",
-    "save-changes": "Zapisz zmiany"
+    "save-changes": "Zapisz zmiany",
+    "course-settings": "Ustawienia kursu",
+    "quiz-settings": "Ustawienia quizu"
   },
   "prizes": {
     "prizes": "Nagrody",
