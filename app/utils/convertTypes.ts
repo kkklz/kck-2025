@@ -3,7 +3,12 @@ import type { Tables, TablesInsert } from '@/types/database.types'
 import type { Prize } from '@/types/prize'
 import type { Question } from '@/types/question'
 import type { Quiz } from '@/types/quiz'
+import type { Course } from '~/types/course'
+import type { QuizSummary } from '~/types/quizSummary'
+import type { User } from '~/types/user'
 
+export type DBUser = Tables<'user'>
+export type DBCourse = Tables<'course'>
 export type DBQuiz = Tables<'quiz'>
 export type DBPrize = Tables<'prize'>
 export type DBQuestion = Tables<'question'>
@@ -26,7 +31,7 @@ export function dbPrizeToPrize(dbPrize: DBPrize): Prize {
   }
 }
 
-export function prizeToDbPrize(prize: Prize): DBPrizeInsert {
+export function prizeToDbPrize(prize: Prize, courseId: string): DBPrizeInsert {
   const placeFrom = Array.isArray(prize.place)
     ? prize.place[0]
     : prize.place
@@ -39,6 +44,7 @@ export function prizeToDbPrize(prize: Prize): DBPrizeInsert {
     placeFrom,
     placeTo,
     reward: prize.reward,
+    courseId,
   }
 }
 
@@ -80,7 +86,7 @@ export function questionToDbQuestion(question: Question, quizId: string): DBQues
 }
 
 // --- Quiz ---
-export function dbQuizToQuiz(dbQuiz: DBQuiz, prize: Prize[], questions: Question[]): Quiz {
+export function dbQuizToQuiz(dbQuiz: DBQuiz, questions: Question[]): Quiz {
   return {
     id: dbQuiz.id,
     description: dbQuiz.description,
@@ -97,5 +103,44 @@ export function quizToDbQuiz(quiz: Quiz, courseId: string): DBQuizInsert {
     timeLimit: quiz.timeLimit,
     maxAttempts: quiz.maxAttempts,
     courseId,
+  }
+}
+
+export function dbQuizToQuizSummary(dbQuiz: DBQuiz): QuizSummary {
+  return {
+    id: dbQuiz.id,
+    description: dbQuiz.description,
+    timeLimit: dbQuiz.timeLimit,
+    maxAttempts: dbQuiz.maxAttempts,
+  }
+}
+
+// --- Course ---
+export function dbCourseToCourse(
+  dbCourse: DBCourse,
+  quizzes: QuizSummary[],
+  prizes: Prize[],
+  users: User[],
+): Course {
+  // todo: photo + ranking
+  return {
+    id: dbCourse.id,
+    name: dbCourse.name,
+    description: dbCourse.description,
+    quizzes,
+    prizes,
+    users,
+  }
+}
+
+// --- User ---
+export function dbUserToUser(dbUser: DBUser): User {
+  // todo: photo
+  return {
+    id: dbUser.id,
+    firstName: dbUser.firstName,
+    lastName: dbUser.lastName,
+    role: dbUser.role,
+    studentIndex: dbUser.studentIndex || null,
   }
 }

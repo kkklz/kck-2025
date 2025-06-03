@@ -43,29 +43,18 @@ export interface Database {
           description: string
           id: string
           name: string
-          prizeId: string
         }
         Insert: {
           description: string
           id?: string
           name: string
-          prizeId: string
         }
         Update: {
           description?: string
           id?: string
           name?: string
-          prizeId?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: 'course_prizeId_fkey'
-            columns: ['prizeId']
-            isOneToOne: false
-            referencedRelation: 'prize'
-            referencedColumns: ['id']
-          },
-        ]
+        Relationships: []
       }
       course_user: {
         Row: {
@@ -99,24 +88,35 @@ export interface Database {
       }
       prize: {
         Row: {
+          courseId: string
           id: string
           placeFrom: number
           placeTo: number
           reward: string
         }
         Insert: {
+          courseId: string
           id?: string
           placeFrom: number
           placeTo: number
           reward: string
         }
         Update: {
+          courseId?: string
           id?: string
           placeFrom?: number
           placeTo?: number
           reward?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'prize_courseId_fkey'
+            columns: ['courseId']
+            isOneToOne: false
+            referencedRelation: 'course'
+            referencedColumns: ['id']
+          },
+        ]
       }
       question: {
         Row: {
@@ -233,7 +233,7 @@ export interface Database {
           id: string
           lastName: string
           photoUrl: string | null
-          role: Database['public']['Enums']['role'] | null
+          role: Database['public']['Enums']['role']
           studentIndex: string | null
         }
         Insert: {
@@ -241,7 +241,7 @@ export interface Database {
           id: string
           lastName: string
           photoUrl?: string | null
-          role?: Database['public']['Enums']['role'] | null
+          role: Database['public']['Enums']['role']
           studentIndex?: string | null
         }
         Update: {
@@ -249,7 +249,7 @@ export interface Database {
           id?: string
           lastName?: string
           photoUrl?: string | null
-          role?: Database['public']['Enums']['role'] | null
+          role?: Database['public']['Enums']['role']
           studentIndex?: string | null
         }
         Relationships: []

@@ -46,11 +46,20 @@ export function useValidationRules() {
     return t('auth.invalid-index-number')
   }]
 
+  const notEmptyRule = [(value: string) => {
+    if (value && value.trim() !== '') {
+      return true
+    }
+
+    return t('universal.field-required')
+  }]
+
   return {
     emailRules,
     passwordRules,
     firstNameRules,
     lastNameRules,
     indexNumberRules,
+    notEmptyRule,
   }
 }

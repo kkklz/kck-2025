@@ -3,7 +3,11 @@
     "login": "Zaloguj się",
     "register": "Zarejestruj się",
     "lecturer": "Wykładowca",
-    "home-page": "Strona główna"
+    "home-page": "Strona główna",
+    "settings": "Ustawienia",
+    "back": "Powrót",
+    "field-required": "To pole jest wymagane",
+    "users": "Użytkownicy"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -22,5 +26,35 @@
     "index-number": "Numer indeksu",
     "settings": "Ustawienia",
     "logout": "Wyloguj się"
+  },
+  "admin": {
+    "admin-panel": "Admin Panel",
+    "main-view": "Widok główny",
+    "user-management": "Zarządzanie użytkownikami",
+    "course-management": "Zarządzanie kursami",
+    "welcome": "Witaj {name}!",
+    "registered-users-number": "Ilosc zarejestrowanych uzytkownikow:",
+    "courses-number": "Ilosc kursow:",
+    "back-to-home": "Wróć na stronę główną",
+    "statistics": "Statystyki",
+    "quizes-number": "Ilość quizów: {0}",
+    "signed-users-number": "Ilość zapisanych użytkowników: {0}",
+    "add-new-course": "Dodaj nowy kurs"
+  },
+  "prizes": {
+    "prizes": "Nagrody",
+    "place": "Miejsce: {0}.",
+    "add-prize": "Dodaj nagrode",
+    "place-from": "Miejsce (od)",
+    "place-to": "Miejsce (do)",
+    "prize": "Nagroda",
+    "invalid-places-message": "Miejsce (od) musi być mniejsze lub równe miejscu (do)"
+  },
+  "users": {
+    "user-name-with-index": "{0} {1} ({2})"
+  },
+  "courses": {
+    "course-name": "Nazwa kursu",
+    "course-description": "Opis kursu"
   }
 }

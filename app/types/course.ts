@@ -1,5 +1,4 @@
 import type { Prize } from './prize'
-import type { QuizAttempt } from './quizAttempt'
 import type { QuizSummary } from './quizSummary'
 import type { User } from './user'
 
@@ -9,7 +8,7 @@ export interface Course {
   description: string
   photoUrl?: string
   quizzes: QuizSummary[]
-  ranking: QuizAttempt[]
+  // ranking: QuizAttempt[]
   users: User[]
   prizes: Prize[]
 }
