@@ -32,6 +32,14 @@
         </v-list-item>
 
         <v-list-item
+          v-if="user?.role === 'admin'"
+          link
+          to="/admin"
+        >
+          {{ $t('admin.admin-panel') }}
+        </v-list-item>
+
+        <v-list-item
           v-if="authUser"
           :title="authUser.email!"
         >
@@ -65,7 +73,9 @@
 
 <script setup lang="ts">
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const { authUser } = storeToRefs(authStore)
+const { user } = storeToRefs(userStore)
 
 watch(authUser, (newUser) => {
   authUser.value = newUser
