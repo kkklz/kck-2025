@@ -60,14 +60,16 @@ const { quizzes, loading: quizzesLoading } = storeToRefs(quizStore)
 
 const breadcrumbs = ref<{ title: string, to?: string }[]>()
 onBeforeMount(async () => {
-  Promise.all([
-    await courseStore.fetchCourse(courseId),
-    await quizStore.fetchQuizzes(courseId),
-  ])
-
   breadcrumbs.value = [
     { title: t('courses.courses-view'), to: '/' },
     { title: currentCourse.value?.name || 'Kurs', to: `/course/${courseId}` },
   ]
+
+  quizStore.clearStore()
+
+  Promise.all([
+    await courseStore.fetchCourse(courseId),
+    await quizStore.fetchQuizzes(courseId),
+  ])
 })
 </script>
