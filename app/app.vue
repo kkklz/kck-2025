@@ -2,12 +2,7 @@
   <v-app class="font-roboto antialiased">
     <NuxtLayout>
       <v-main>
-        <Transition
-          name="page"
-          mode="out-in"
-        >
-          <NuxtPage />
-        </Transition>
+        <NuxtPage />
       </v-main>
     </NuxtLayout>
   </v-app>
