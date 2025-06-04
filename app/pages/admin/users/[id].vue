@@ -1,8 +1,10 @@
 <template>
-  <UserSettingsForm
-    v-if="user"
-    :user="user"
-  />
+  <div>
+    <UserSettingsForm
+      v-if="user"
+      :user="user"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

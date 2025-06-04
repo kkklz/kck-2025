@@ -17,7 +17,7 @@
 
   <v-card
     max-width="1200"
-    class="mx-auto mt-12 pa-8"
+    class="mx-auto mt-4 pa-8"
   >
     <v-btn
       variant="plain"
