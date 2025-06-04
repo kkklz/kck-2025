@@ -73,6 +73,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     authUser.value = null
+    userStore.clearStore()
     router.push('/login')
   }
 
