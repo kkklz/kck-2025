@@ -90,6 +90,17 @@ export const useQuizStore = defineStore('quiz', () => {
     return quizData
   }
 
+  async function fetchQuizzes(courseId: string) {
+    const { data: quizData, error: quizError } = await supabase.from(QUIZ_TABLE).select('*').eq('courseId', courseId)
+    if (quizError) {
+      error.value = quizError
+
+      return
+    }
+
+    quizzes.value = quizData.map(q => dbQuizToQuiz(q, []))
+  }
+
   async function fetchQuiz(quizId: string) {
     loading.value = true
     error.value = null
@@ -146,19 +157,16 @@ export const useQuizStore = defineStore('quiz', () => {
 
       // --- USUWANIE PYTAŃ ---
       await Promise.all(oldQuestions.map(async (oldQ) => {
-        if (!newQuestions.find(q => q.id === oldQ.id)) {
-          await deleteQuestion(oldQ.id)
-        }
+        await deleteQuestion(oldQ.id)
       }))
 
       // --- DODAWANIE/EDYCJA PYTAŃ I ODPOWIEDZI ---
       await Promise.all(newQuestions.map(async (newQ) => {
-        if (oldQuestions.find(q => q.id === newQ.id)) {
-          await updateQuestion(newQ, quizId)
-        }
-        else {
-          await addQuestion(newQ, quizId)
-        }
+        // Dodaj nowe pytanie i odpowiedzi
+        await addQuestion(newQ, quizId)
+        await Promise.all(newQ.answers.map(async (newA) => {
+          await addAnswer(newA, newQ.id)
+        }))
       }))
 
       await fetchQuiz(quizId)
@@ -211,6 +219,7 @@ export const useQuizStore = defineStore('quiz', () => {
     updateQuestion,
     deleteQuestion,
     addQuiz,
+    fetchQuizzes,
     fetchQuiz,
     updateQuiz,
     deleteQuiz,
