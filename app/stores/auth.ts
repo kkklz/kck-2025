@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
   const supabase = useSupabaseClient()
   const router = useRouter()
   const userStore = useUserStore()
+  const { user } = storeToRefs(userStore)
 
   async function register(email: string, password: string, userData: RegisterUser) {
     // TODO: Dodanie pozostałych pól z formularza rejestracji oraz zaimplementowanie Users Store do dodania ich do bazy danych
@@ -78,9 +79,10 @@ export const useAuthStore = defineStore('auth', () => {
   function setupAuthListener() {
     supabase.auth.onAuthStateChange((event, session) => {
       authUser.value = session?.user || null
-
       setTimeout(async () => {
-        if (authUser.value != null) {
+        // dodatkowy warunek user.value === null, bo state change jest wywolywany nawet przy focusie na karte (np. przy zmianie kart w przegladarce)
+        // dodatkowo zgodnie z dokumentacja, nie wiedziec dlaczego, event SIGNED_IN jest wywolywany przy focusie na karte, a nie tylko przy logowaniu
+        if (authUser.value != null && user.value === null) {
           await userStore.fetchUser(authUser.value.id)
         }
       }, 0)
