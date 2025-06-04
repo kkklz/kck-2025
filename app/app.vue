@@ -2,7 +2,12 @@
   <v-app class="font-roboto antialiased">
     <NuxtLayout>
       <v-main>
-        <NuxtPage />
+        <Transition
+          name="page"
+          mode="out-in"
+        >
+          <NuxtPage />
+        </Transition>
       </v-main>
     </NuxtLayout>
   </v-app>
@@ -15,3 +20,23 @@ onBeforeMount(() => {
   authStore.setupAuthListener()
 })
 </script>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  filter: blur(2px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.98);
+  filter: blur(2px);
+}
+</style>

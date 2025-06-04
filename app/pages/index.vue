@@ -10,7 +10,7 @@
 
     <HomepageCoursesSkeleton v-if="loading" />
 
-    <div class="mt-12 px-5 gap-6 grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="px-5 gap-6 grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4">
       <v-card
         v-for="course in courses"
         :key="course.id"
