@@ -1,9 +1,26 @@
 <template>
-  <v-navigation-drawer width="300">
-    <v-list-item
-      :title="$t('admin.admin-panel')"
-      subtitle="Ustawienia administratora"
-    />
+  <v-navigation-drawer
+    v-model="drawer"
+    :rail="rail"
+    permanent
+    width="300"
+    @click="rail = false"
+  >
+    <v-list>
+      <v-list-item
+        :title="$t('admin.admin-panel')"
+        subtitle="Ustawienia administratora"
+        prepend-icon="mdi-wrench"
+      >
+        <template #append>
+          <v-btn
+            icon="mdi-chevron-left"
+            variant="text"
+            @click.stop="rail = !rail"
+          />
+        </template>
+      </v-list-item>
+    </v-list>
 
     <v-divider />
 
@@ -29,3 +46,8 @@
     />
   </v-navigation-drawer>
 </template>
+
+<script setup lang="ts">
+const drawer = ref(true)
+const rail = ref(false)
+</script>

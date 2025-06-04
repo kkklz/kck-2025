@@ -2,7 +2,9 @@
   <div
     class="pa-4 gap-4 grid"
   >
-    <v-card class="py-2">
+    <v-card
+      class="pa-4"
+    >
       <v-card-title class="!text-4xl">
         {{ $t('admin.course-management') }}
       </v-card-title>
@@ -17,9 +19,9 @@
           {{ $t('admin.add-new-course') }}
         </v-btn>
       </v-card-text>
-    </v-card>
 
-    <v-card>
+      <v-divider />
+
       <v-list>
         <v-list-item
           v-for="course in courses"
@@ -37,11 +39,11 @@
 
           <v-list-item-subtitle class="my-2 gap-2 !flex">
             <v-chip
-              color="green"
               label
               density="compact"
               prepend-icon="mdi-file-document"
               variant="elevated"
+              class="bg-primary"
             >
               {{ $t('admin.quizes-number', [
                 course.quizzes.length,
@@ -49,11 +51,11 @@
             </v-chip>
 
             <v-chip
-              color="green"
               label
               density="compact"
               prepend-icon="mdi-account"
               variant="elevated"
+              class="bg-secondary"
             >
               {{ $t('admin.signed-users-number', [
                 course.users.length,
@@ -63,8 +65,7 @@
 
           <template #append>
             <v-btn
-              color="primary"
-              variant="outlined"
+              variant="plain"
               link
               :to="`/admin/courses/${course.id}`"
             >

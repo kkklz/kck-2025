@@ -1,8 +1,8 @@
 <template>
   <v-card
     :title="$t('prizes.prizes')"
+    class="pa-4"
     elevation="0"
-    class="px-4"
   >
     <v-list>
       <v-list-item

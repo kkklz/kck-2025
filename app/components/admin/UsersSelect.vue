@@ -18,6 +18,7 @@
       <template #chip="{props, item}">
         <v-chip
           v-bind="props"
+          :prepend-avatar="item.raw.photoUrl || '/default-avatar.webp'"
           :text="$t('users.user-name-with-index', [
             item.raw.firstName,
             item.raw.lastName,
@@ -29,6 +30,7 @@
       <template #[`item`]="{props, item}">
         <v-list-item
           v-bind="props"
+          :prepend-avatar="item.raw.photoUrl || '/default-avatar.webp'"
           :title="$t('users.user-name-with-index', [
             item.raw.firstName,
             item.raw.lastName,

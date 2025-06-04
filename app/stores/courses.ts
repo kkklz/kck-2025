@@ -207,6 +207,26 @@ export const useCourseStore = defineStore('course', () => {
     }
   }
 
+  async function deleteCourse(id: string) {
+    error.value = null
+    loading.value = true
+
+    try {
+      const { error: courseError } = await supabase.from(COURSE_TABLE)
+        .delete()
+        .eq('id', id)
+
+      if (courseError)
+        throw courseError
+    }
+    catch (err: any) {
+      error.value = err
+    }
+    finally {
+      loading.value = false
+    }
+  }
+
   return {
     currentCourse,
     courses,
@@ -215,5 +235,6 @@ export const useCourseStore = defineStore('course', () => {
     fetchCourses,
     fetchCourse,
     addOrEditCourse,
+    deleteCourse,
   }
 })
