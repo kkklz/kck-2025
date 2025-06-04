@@ -1,7 +1,7 @@
 <template>
-  <AppBar />
+  <div>
+    <AdminNavDrawer />
 
-  <AdminNavDrawer />
-
-  <slot />
+    <slot />
+  </div>
 </template>

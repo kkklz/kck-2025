@@ -1,5 +1,5 @@
 <template>
-  <AppBar />
-
-  <slot />
+  <div>
+    <slot />
+  </div>
 </template>
