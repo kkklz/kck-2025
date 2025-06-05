@@ -6,7 +6,7 @@
 
     <v-card class="mx-5">
       <v-img
-        :src="currentCourse?.photoUrl || '/default-course-image.webp'"
+        :src="currentCourse?.photoUrl || '/default-course-image-large.webp'"
         height="250"
         cover
         class="align-end"
