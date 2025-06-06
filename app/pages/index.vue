@@ -16,7 +16,7 @@
         :key="course.id"
         link
         :to="`/course/${course.id}`"
-        class="flex flex-col"
+        class="pb-4 flex flex-col"
       >
         <v-img
           :src="course.photoUrl || '/default-course-image.webp'"
@@ -24,9 +24,13 @@
           cover
         />
 
-        <p class="text-lg text-black p-4">
+        <v-card-title class="text-lg text-black p-4">
           {{ course.name }}
-        </p>
+        </v-card-title>
+
+        <v-card-subtitle>
+          {{ course.description }}
+        </v-card-subtitle>
       </v-card>
     </div>
   </div>
