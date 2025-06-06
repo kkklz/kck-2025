@@ -163,9 +163,9 @@ export const useQuizStore = defineStore('quiz', () => {
       // --- DODAWANIE/EDYCJA PYTAŃ I ODPOWIEDZI ---
       await Promise.all(newQuestions.map(async (newQ) => {
         // Dodaj nowe pytanie i odpowiedzi
-        await addQuestion(newQ, quizId)
+        const newDbQ = await addQuestion(newQ, quizId)
         await Promise.all(newQ.answers.map(async (newA) => {
-          await addAnswer(newA, newQ.id)
+          await addAnswer(newA, newDbQ.id)
         }))
       }))
 
