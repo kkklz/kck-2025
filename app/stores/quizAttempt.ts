@@ -284,6 +284,31 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     loading.value = false
   }
 
+  // --- Pobierz liczbę zakończonych podejść użytkownika do quizu ---
+  const getUserAttemptsCount = async (): Promise<number> => {
+    if (!currentQuiz.value?.id || !user.value?.id) {
+      return 0
+    }
+    const { data, error: err } = await supabase
+      .from(QUIZ_ATTEMPT_TABLE)
+      .select('id')
+      .eq('quizId', currentQuiz.value.id)
+      .eq('userId', user.value.id)
+      .eq('status', 'submitted')
+
+    if (err) {
+      error.value = err.message
+
+      return 0
+    }
+
+    return data?.length || 0
+  }
+
+  const incrementQuestionIndex = () => {
+    quizAttempt.value!.questionsAnswered++
+  }
+
   return {
     quizAttempt,
     error,
@@ -298,5 +323,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     currentQuestionIndex,
     currentQuestion,
     addTimeToQuizAttempt,
+    getUserAttemptsCount,
+    incrementQuestionIndex,
   }
 })

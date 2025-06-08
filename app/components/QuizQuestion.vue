@@ -1,0 +1,96 @@
+<template>
+  <v-card
+    elevation="2"
+    class="mx-auto pa-8 !max-w-[600px]"
+  >
+    <!-- Nagłówek quizu i numeracja -->
+    <div class="mb-2 flex items-center justify-between">
+      <slot name="quiz-title" />
+
+      <span class="text-grey text-caption">{{ questionIndexLabel }}</span>
+    </div>
+
+    <v-divider class="mb-4" />
+
+    <!-- Treść pytania -->
+    <div class="font-weight-bold text-h6 mb-2 text-center">
+      {{ question?.content }}
+    </div>
+
+    <div class="text-grey text-body-2 mb-4 text-center">
+      {{ isSingleCorrect
+        ? 'Wybierz jedną poprawną odpowiedź.'
+        : 'Wybierz wszystkie poprawne odpowiedzi.' }}
+    </div>
+
+    <!-- Odpowiedzi -->
+    <div v-if="question">
+      <v-radio-group
+        v-if="isSingleCorrect"
+        v-model="model"
+        class="mb-4"
+        hide-details
+      >
+        <v-radio
+          v-for="answer in question.answers"
+          :key="answer.id"
+          :label="answer.answer"
+          :value="answer.id"
+          class="answer-radio"
+        />
+      </v-radio-group>
+
+      <v-checkbox-group
+        v-else
+        v-model="model"
+        class="mb-4"
+        hide-details
+      >
+        <v-checkbox
+          v-for="answer in question.answers"
+          :key="answer.id"
+          :label="answer.answer"
+          :value="answer.id"
+          class="answer-checkbox"
+        />
+      </v-checkbox-group>
+    </div>
+
+    <!-- Przyciski -->
+    <div class="mt-6 flex gap-2 justify-between">
+      <slot name="end" />
+
+      <slot name="confirm" />
+    </div>
+  </v-card>
+</template>
+
+<script setup lang="ts">
+import type { Question } from '~/types/question'
+import { computed } from 'vue'
+
+const props = defineProps<{ question: Question | null, questionIndexLabel?: string }>()
+const model = defineModel<string[] | string>()
+
+const isSingleCorrect = computed(() => {
+  if (!props.question)
+    return true
+
+  return props.question.answers.filter(a => a.correct).length === 1
+})
+</script>
+
+<style scoped>
+.answer-radio .v-selection-control__input,
+.answer-checkbox .v-selection-control__input {
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: #fafbfc;
+  transition: border-color 0.2s, background 0.2s;
+}
+.answer-radio.v-selection-control--dirty .v-selection-control__input,
+.answer-checkbox.v-selection-control--dirty .v-selection-control__input {
+  border-color: #1976d2;
+  background: #e3f0fd;
+}
+</style>

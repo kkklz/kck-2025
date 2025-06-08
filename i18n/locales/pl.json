@@ -88,6 +88,13 @@
     "add-quiz": "Utwórz quiz",
     "quizzes": "Quizy",
     "quizz-title": "Quiz #{0}",
-    "no-quizzes-available": "Brak dostepnych quizów."
+    "no-quizzes-available": "Brak dostepnych quizów.",
+    "your-attempts": "Twoje podejścia",
+    "no-attempts-available": "Brak dostepnych podejść.",
+    "start-quiz": "Rozpocznij quiz",
+    "error-fetching-quiz": "Błąd podczas pobierania quizu",
+    "question-count": "Ilość pytań",
+    "time-left": "Pozostały czas",
+    "end-quiz": "Zakończ quiz"
   }
 }
