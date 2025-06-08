@@ -4,6 +4,7 @@ import type { Prize } from '@/types/prize'
 import type { Question } from '@/types/question'
 import type { Quiz } from '@/types/quiz'
 import type { Course } from '~/types/course'
+import type { QuizAttempt } from '~/types/quizAttempt'
 import type { QuizSummary } from '~/types/quizSummary'
 import type { User } from '~/types/user'
 
@@ -13,7 +14,9 @@ export type DBQuiz = Tables<'quiz'>
 export type DBPrize = Tables<'prize'>
 export type DBQuestion = Tables<'question'>
 export type DBAnswer = Tables<'answer'>
+export type DBQuizAttempt = Tables<'quiz_attempt'>
 
+export type DBQuizAttemptUpdate = TablesUpdate<'quiz_attempt'>
 export type DBCourseUpdate = TablesUpdate<'course'>
 
 export type DBCourseInsert = TablesInsert<'course'>
@@ -21,6 +24,7 @@ export type DBQuizInsert = TablesInsert<'quiz'>
 export type DBPrizeInsert = TablesInsert<'prize'>
 export type DBQuestionInsert = TablesInsert<'question'>
 export type DBAnswerInsert = TablesInsert<'answer'>
+export type DBQuizAttemptInsert = TablesInsert<'quiz_attempt'>
 
 // --- Prize ---
 export function dbPrizeToPrize(dbPrize: DBPrize): Prize {
@@ -156,5 +160,35 @@ export function dbUserToUser(dbUser: DBUser): User {
     lastName: dbUser.lastName,
     role: dbUser.role,
     studentIndex: dbUser.studentIndex || null,
+  }
+}
+
+// --- Quiz Attempt ---
+export function dbQuizAttemptToQuizAttempt(dbQuizAttempt: DBQuizAttempt): QuizAttempt {
+  return {
+    id: dbQuizAttempt.id,
+    quizId: dbQuizAttempt.quizId,
+    userId: dbQuizAttempt.userId,
+    attemptDate: new Date(dbQuizAttempt.attemptDate),
+    finalScore: dbQuizAttempt.finalScore,
+    questionsAnswered: dbQuizAttempt.questionAnswered,
+    currentStreak: dbQuizAttempt.currentStreak,
+    status: dbQuizAttempt.status,
+    dueDate: new Date(dbQuizAttempt.dueDate),
+    currentBonus: dbQuizAttempt.currentBonus || null,
+  }
+}
+
+export function quizAttemptToDbQuizAttempt(quizAttempt: QuizAttempt): DBQuizAttemptInsert {
+  return {
+    quizId: quizAttempt.quizId,
+    userId: quizAttempt.userId,
+    attemptDate: quizAttempt.attemptDate.toISOString(),
+    finalScore: quizAttempt.finalScore,
+    questionAnswered: quizAttempt.questionsAnswered,
+    currentStreak: quizAttempt.currentStreak,
+    status: quizAttempt.status,
+    dueDate: quizAttempt.dueDate.toISOString(),
+    currentBonus: quizAttempt.currentBonus || null,
   }
 }

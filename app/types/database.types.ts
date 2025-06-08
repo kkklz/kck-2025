@@ -185,7 +185,9 @@ export interface Database {
       quiz_attempt: {
         Row: {
           attemptDate: string
+          currentBonus: Database['public']['Enums']['bonus'] | null
           currentStreak: number
+          dueDate: string
           finalScore: number
           id: string
           questionAnswered: number
@@ -195,7 +197,9 @@ export interface Database {
         }
         Insert: {
           attemptDate: string
+          currentBonus?: Database['public']['Enums']['bonus'] | null
           currentStreak: number
+          dueDate: string
           finalScore: number
           id?: string
           questionAnswered: number
@@ -205,7 +209,9 @@ export interface Database {
         }
         Update: {
           attemptDate?: string
+          currentBonus?: Database['public']['Enums']['bonus'] | null
           currentStreak?: number
+          dueDate?: string
           finalScore?: number
           id?: string
           questionAnswered?: number
@@ -265,6 +271,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      bonus: 'minigame_shooter' | 'minigame_memory' | '50_50' | 'bonus_time'
       role: 'admin' | 'student'
       status: 'started' | 'submitted'
     }
@@ -382,6 +389,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      bonus: ['minigame_shooter', 'minigame_memory', '50_50', 'bonus_time'],
       role: ['admin', 'student'],
       status: ['started', 'submitted'],
     },
