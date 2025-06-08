@@ -68,6 +68,9 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       return
     }
 
+    loading.value = true
+    error.value = null
+
     quizAttempt.value = {
       id: nanoid(),
       quizId: currentQuiz.value.id,
@@ -88,6 +91,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (err) {
       error.value = err.message
     }
+
+    loading.value = false
   }
 
   const submitQuizAttempt = async () => {
@@ -103,6 +108,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       return
     }
 
+    loading.value = true
+    error.value = null
     quizAttempt.value.status = 'submitted'
 
     const { error: err } = await supabase
@@ -113,6 +120,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (err) {
       error.value = err.message
     }
+
+    loading.value = false
   }
 
   const endQuizAttempt = async () => {
@@ -124,6 +133,10 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (quizAttempt.value.status === 'submitted') {
       return
     }
+
+    loading.value = true
+    error.value = null
+
     quizAttempt.value.status = 'submitted'
     const { error: err } = await supabase
       .from(QUIZ_ATTEMPT_TABLE)
@@ -132,6 +145,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (err) {
       error.value = err.message
     }
+
+    loading.value = false
   }
 
   const forceStartQuizAttempt = async () => {
@@ -167,6 +182,9 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
       return
     }
+
+    loading.value = true
+    error.value = null
 
     const question = currentQuiz.value?.questions.find(q => q.id === questionId)
 
@@ -221,6 +239,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
     if (err) {
       error.value = err.message
+      loading.value = false
 
       return
     }
@@ -229,6 +248,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (currentQuiz.value && quizAttempt.value.questionsAnswered >= currentQuiz.value.questions.length) {
       await submitQuizAttempt()
     }
+
+    loading.value = false
   }
 
   // --- Wcześniejsze zakończenie quizu przez użytkownika ---
@@ -243,6 +264,10 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
       return
     }
+
+    loading.value = true
+    error.value = null
+
     // Dodaj czas do dueDate
     const newDueDate = new Date(quizAttempt.value.dueDate.getTime() + extraSeconds * 1000)
     quizAttempt.value.dueDate = newDueDate
@@ -255,6 +280,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     if (err) {
       error.value = err.message
     }
+
+    loading.value = false
   }
 
   return {
