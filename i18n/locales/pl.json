@@ -13,7 +13,10 @@
     "delete": "Usuń",
     "role": "Rola",
     "admin": "Administrator",
-    "student": "Student"
+    "student": "Student",
+    "yes": "Tak",
+    "No": "Nie",
+    "no": "Nie"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -95,6 +98,10 @@
     "error-fetching-quiz": "Błąd podczas pobierania quizu",
     "question-count": "Ilość pytań",
     "time-left": "Pozostały czas",
-    "end-quiz": "Zakończ quiz"
+    "end-quiz": "Zakończ quiz",
+    "unfinished-attempt": "Masz niedokończone podjeście",
+    "do-you-want-to-continue": "Czy chciałbyś je kontynuować?",
+    "max-attempts-exceeded": "Limit podejść został wyczerpany",
+    "next-question": "Następne pytanie"
   }
 }

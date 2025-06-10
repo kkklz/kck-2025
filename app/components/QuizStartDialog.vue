@@ -1,6 +1,4 @@
 <template>
-  <v-breadcrumbs :items="breadcrumbs" />
-
   <v-card
     elevation="2"
     class="mx-auto pa-6 !max-w-[600px]"
@@ -12,7 +10,7 @@
         @click="goBack"
       />
 
-      <span class="text-h6 font-weight-bold">{{ $t('quiz.quiz') }}</span>
+      <span class="font-weight-bold text-h6">{{ $t('quiz.quiz') }}</span>
 
       <div style="width: 40px;" />
     </div>
@@ -84,15 +82,14 @@
 import type { PostgrestError } from '@supabase/supabase-js'
 import type { Quiz } from '~/types/quiz'
 
-const { loading, userAttempts, currentQuiz, quizError, breadcrumbs } = defineProps<{
+const { loading, userAttempts, currentQuiz, quizError } = defineProps<{
   loading: boolean
   userAttempts: number
   currentQuiz: Quiz | null
   quizError: PostgrestError | null
-  breadcrumbs: { title: string, to?: string }[]
 }>()
 
-defineEmits<{ (e: 'start'): void }>()
+defineEmits<{ start: [] }>()
 
 const router = useRouter()
 
