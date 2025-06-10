@@ -40,20 +40,15 @@
         />
       </v-radio-group>
 
-      <v-checkbox-group
+      <v-checkbox
+        v-for="answer in question.answers"
         v-else
+        :key="answer.id"
         v-model="model"
-        class="mb-4"
-        hide-details
-      >
-        <v-checkbox
-          v-for="answer in question.answers"
-          :key="answer.id"
-          :label="answer.answer"
-          :value="answer.id"
-          class="answer-checkbox"
-        />
-      </v-checkbox-group>
+        :label="answer.answer"
+        :value="answer.id"
+        class="answer-checkbox"
+      />
     </div>
 
     <!-- Przyciski -->
