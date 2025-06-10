@@ -58,15 +58,19 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       currentBonus: null,
     }
 
-    const { error: err } = await supabase
+    const { data, error: err } = await supabase
       .from(QUIZ_ATTEMPT_TABLE)
       .insert(quizAttemptToDbQuizAttempt(quizAttempt.value))
+      .select()
+      .single()
+
+    if (data && quizAttempt.value) {
+      quizAttempt.value.id = data.id
+      currentStage.value = 'quiz'
+    }
 
     if (err) {
       error.value = err.message
-    }
-    else {
-      currentStage.value = 'quiz'
     }
 
     loading.value = false
