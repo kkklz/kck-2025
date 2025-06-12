@@ -95,6 +95,12 @@ onMounted(async () => {
   await quizAttemptStore.getStartedQuizAttempt()
 })
 
+watch(currentStage, async (newStage) => {
+  if (newStage === 'start') {
+    await quizAttemptStore.getStartedQuizAttempt()
+  }
+})
+
 function handleContinueQuiz() {
   quizAttemptStore.continueQuiz()
 }
