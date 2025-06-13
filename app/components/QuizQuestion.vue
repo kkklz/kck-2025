@@ -8,6 +8,8 @@
       <slot name="quiz-title" />
 
       <span class="text-grey text-caption">{{ questionIndexLabel }}</span>
+
+      <span>{{ formattedTime }}</span>
     </div>
 
     <v-divider class="mb-4" />
@@ -67,11 +69,50 @@ import { computed } from 'vue'
 const props = defineProps<{ question: Question | null, questionIndexLabel?: string }>()
 const model = defineModel<string[] | string>()
 
+const quizAttemptStore = useQuizAttemptStore()
+const { quizAttempt } = storeToRefs(quizAttemptStore)
+
+const timeLeft = ref(0)
+const intervalId = ref<NodeJS.Timeout | null>(null)
+
 const isSingleCorrect = computed(() => {
   if (!props.question)
     return true
 
   return props.question.answers.filter(a => a.correct).length === 1
+})
+
+const formattedTime = computed(() => {
+  const minutes = Math.floor(timeLeft.value / 60)
+  const seconds = timeLeft.value % 60
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+})
+
+function updateTimer() {
+  if (!quizAttempt.value) {
+    return
+  }
+  const now = new Date().getTime()
+  const due = quizAttempt.value.dueDate.getTime()
+  const difference = Math.floor((due - now) / 1000)
+  // strefy czasowe nie dzialaja wiec timer po F5 nie dziala (w bazie danych zapisywane sa daty w +00:00)
+  if (difference <= 0) {
+    // logika jak czas sie skonczyl
+  }
+  else {
+    timeLeft.value = difference
+  }
+}
+
+onMounted(() => {
+  updateTimer()
+  intervalId.value = setInterval(updateTimer, 1000)
+})
+
+onBeforeUnmount(() => {
+  if (intervalId.value)
+    clearInterval(intervalId.value)
 })
 </script>
 
