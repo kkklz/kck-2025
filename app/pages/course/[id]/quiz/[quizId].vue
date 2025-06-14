@@ -57,14 +57,15 @@
       <QuizQuestion
         v-model="selectedAnswers"
         :question="currentQuestion"
+        :question-index-label="`${currentQuestionIndex + 1} / ${currentQuiz?.questions.length}`"
       >
         <template #quiz-title>
-          <span>{{ currentQuiz?.description }}</span>
+          <span class="max-w-[30ch] break-all">{{ currentQuiz?.description }}</span>
         </template>
 
         <template #end>
           <v-btn
-            v-if="currentIndex < totalQuestions - 1"
+            v-if="currentQuestionIndex < totalQuestions - 1"
             @click="endQuizAttempt"
           >
             {{ $t('quiz.end-quiz') }}
@@ -76,7 +77,7 @@
             color="primary"
             @click="handleSubmitQuestion"
           >
-            {{ currentIndex < totalQuestions - 1
+            {{ currentQuestionIndex < totalQuestions - 1
               ? $t('quiz.next-question')
               : $t('quiz.end-quiz') }}
           </v-btn>
@@ -91,7 +92,7 @@ const route = useRoute()
 const quizStore = useQuizStore()
 const quizAttemptStore = useQuizAttemptStore()
 const { currentQuiz, error: quizError } = storeToRefs(quizStore)
-const { currentQuestion, currentStage, loading, userAttempts, quizAttempt } = storeToRefs(quizAttemptStore)
+const { currentQuestion, currentStage, loading, userAttempts, quizAttempt, currentQuestionIndex } = storeToRefs(quizAttemptStore)
 const router = useRouter()
 
 const selectedAnswers = ref<string[]>([''])
@@ -100,7 +101,6 @@ const animateRef = ref(false)
 const courseId = route.params.id as string
 const quizId = route.params.quizId as string
 
-const currentIndex = computed(() => quizAttemptStore.currentQuestionIndex)
 const totalQuestions = computed(() => currentQuiz.value?.questions.length || 0)
 
 onMounted(async () => {
@@ -142,6 +142,8 @@ async function endQuizAttempt() {
 async function handleSubmitQuestion() {
   animate()
   await quizAttemptStore.answerQuestion(selectedAnswers.value)
+  if (selectedAnswers.value)
+    selectedAnswers.value = ['']
 }
 
 function animate() {

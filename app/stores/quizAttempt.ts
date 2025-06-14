@@ -6,7 +6,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   const quizAttempt = ref<QuizAttempt | null>(null)
   const error = ref<string | null>(null)
   const loading = ref<boolean>(false)
-  const currentStage = ref<'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary'>('start')
+  const currentStage = ref<'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary' | 'bonus'>('start')
   const userAttempts = ref(0)
 
   const quizStore = useQuizStore()
@@ -250,7 +250,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     // --- OBSŁUGA STREAKA I BONUSU ---
     if (isPerfect) {
       quizAttempt.value.currentStreak++
-      if (quizAttempt.value.currentStreak >= 3) {
+      if (quizAttempt.value.currentStreak >= 3 && currentQuestionIndex) {
         const bonuses: ('minigame_shooter' | 'minigame_memory' | '50_50' | 'bonus_time')[] = [
           'minigame_shooter',
           'minigame_memory',
@@ -260,6 +260,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
         const randomBonus = bonuses[Math.floor(Math.random() * bonuses.length)] ?? null
         quizAttempt.value.currentBonus = randomBonus
         quizAttempt.value.currentStreak = 0
+        // currentStage.value = 'bonus'
       }
     }
     else {

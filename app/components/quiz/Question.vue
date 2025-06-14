@@ -4,18 +4,25 @@
     class="mx-auto pa-8 !max-w-[600px]"
   >
     <!-- Nagłówek quizu i numeracja -->
-    <div class="mb-2 flex items-center justify-between">
+    <div class="mb-2 grid grid-cols-3 items-end">
       <slot name="quiz-title" />
 
-      <span class="text-grey text-caption">{{ questionIndexLabel }}</span>
+      <div class="flex flex-col gap-2 items-center justify-center">
+        <span class="text-center">{{ questionIndexLabel }}</span>
 
-      <span>{{ formattedTime }}</span>
+        <span><v-icon
+          icon="mdi-fire"
+          color="#fa6705"
+        />{{ quizAttempt?.currentStreak }}</span>
+      </div>
+
+      <span class="text-end">{{ formattedTime }}</span>
     </div>
 
     <v-divider class="mb-4" />
 
     <!-- Treść pytania -->
-    <div class="font-weight-bold text-h6 mb-2 text-center">
+    <div class="mb-2 text-center">
       {{ question?.content }}
     </div>
 
@@ -25,6 +32,9 @@
         : 'Wybierz wszystkie poprawne odpowiedzi.' }}
     </div>
 
+    <div>
+      {{ model }}
+    </div>
     <!-- Odpowiedzi -->
     <div v-if="question">
       <v-radio-group
@@ -38,19 +48,19 @@
           :key="answer.id"
           :label="answer.answer"
           :value="answer.id"
-          class="answer-radio"
         />
       </v-radio-group>
 
-      <v-checkbox
-        v-for="answer in question.answers"
-        v-else
-        :key="answer.id"
-        v-model="model"
-        :label="answer.answer"
-        :value="answer.id"
-        class="answer-checkbox"
-      />
+      <div v-else>
+        <v-checkbox
+          v-for="answer in question.answers"
+          :key="answer.id"
+          v-model="model"
+          hide-details
+          :label="answer.answer"
+          :value="answer.id"
+        />
+      </div>
     </div>
 
     <!-- Przyciski -->
@@ -67,7 +77,7 @@ import type { Question } from '~/types/question'
 import { computed } from 'vue'
 
 const props = defineProps<{ question: Question | null, questionIndexLabel?: string }>()
-const model = defineModel<string[] | string>()
+const model = defineModel<string[]>()
 
 const quizAttemptStore = useQuizAttemptStore()
 const { quizAttempt } = storeToRefs(quizAttemptStore)
@@ -114,18 +124,3 @@ onBeforeUnmount(() => {
     clearInterval(intervalId.value)
 })
 </script>
-
-<style scoped>
-.answer-radio .v-selection-control__input,
-.answer-checkbox .v-selection-control__input {
-  border-radius: 8px;
-  border: 2px solid #e0e0e0;
-  background: #fafbfc;
-  transition: border-color 0.2s, background 0.2s;
-}
-.answer-radio.v-selection-control--dirty .v-selection-control__input,
-.answer-checkbox.v-selection-control--dirty .v-selection-control__input {
-  border-color: #1976d2;
-  background: #e3f0fd;
-}
-</style>
