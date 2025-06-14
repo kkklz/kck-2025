@@ -82,12 +82,7 @@ const isSingleCorrect = computed(() => {
   return props.question.answers.filter(a => a.correct).length === 1
 })
 
-const formattedTime = computed(() => {
-  const minutes = Math.floor(timeLeft.value / 60)
-  const seconds = timeLeft.value % 60
-
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-})
+const formattedTime = computed(() => formatDate(timeLeft.value))
 
 function updateTimer() {
   if (!quizAttempt.value) {

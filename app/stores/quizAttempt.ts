@@ -6,7 +6,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   const quizAttempt = ref<QuizAttempt | null>(null)
   const error = ref<string | null>(null)
   const loading = ref<boolean>(false)
-  const currentStage = ref<'start' | 'continue' | 'quiz' | 'no-attempts'>('start')
+  const currentStage = ref<'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary'>('start')
   const userAttempts = ref(0)
 
   const quizStore = useQuizStore()
@@ -102,7 +102,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       error.value = err.message
     }
 
-    clearStore()
+    currentStage.value = 'summary'
+
     loading.value = false
   }
 

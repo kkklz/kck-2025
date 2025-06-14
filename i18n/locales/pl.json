@@ -102,6 +102,11 @@
     "unfinished-attempt": "Masz niedokończone podjeście",
     "do-you-want-to-continue": "Czy chciałbyś je kontynuować?",
     "max-attempts-exceeded": "Limit podejść został wyczerpany",
-    "next-question": "Następne pytanie"
+    "next-question": "Następne pytanie",
+    "summary": "Podsumowanie Quizu",
+    "achievied-points": "Ilość zdobytych punktów",
+    "questions-count": "Ilość odpowiedzi",
+    "attempt-time": "Długość podejścia",
+    "back-to-course": "Powrót do kursu"
   }
 }

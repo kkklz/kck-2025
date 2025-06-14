@@ -42,6 +42,14 @@
       </v-btn>
     </v-card>
 
+    <div v-else-if="currentStage === 'summary'">
+      <QuizSummary
+        :quiz-attempt="quizAttempt"
+        :quiz="currentQuiz"
+        :course-id="courseId"
+      />
+    </div>
+
     <div
       v-else
       :class="{'slideIn': animateRef}"
@@ -83,7 +91,7 @@ const route = useRoute()
 const quizStore = useQuizStore()
 const quizAttemptStore = useQuizAttemptStore()
 const { currentQuiz, error: quizError } = storeToRefs(quizStore)
-const { currentQuestion, currentStage, loading, userAttempts } = storeToRefs(quizAttemptStore)
+const { currentQuestion, currentStage, loading, userAttempts, quizAttempt } = storeToRefs(quizAttemptStore)
 const router = useRouter()
 
 const selectedAnswers = ref<string[]>([''])
@@ -98,6 +106,10 @@ const totalQuestions = computed(() => currentQuiz.value?.questions.length || 0)
 onMounted(async () => {
   await quizStore.fetchQuiz(quizId)
   await quizAttemptStore.getStartedQuizAttempt()
+})
+
+onUnmounted(() => {
+  quizAttemptStore.clearStore()
 })
 
 watch(currentStage, async (newStage) => {
