@@ -165,16 +165,22 @@ export function dbUserToUser(dbUser: DBUser): User {
 
 // --- Quiz Attempt ---
 export function dbQuizAttemptToQuizAttempt(dbQuizAttempt: DBQuizAttempt): QuizAttempt {
+  const convertToLocalDate = (dateString: string) => {
+    const date = new Date(dateString)
+
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  }
+
   return {
     id: dbQuizAttempt.id,
     quizId: dbQuizAttempt.quizId,
     userId: dbQuizAttempt.userId,
-    attemptDate: new Date(dbQuizAttempt.attemptDate),
+    attemptDate: convertToLocalDate(dbQuizAttempt.attemptDate),
     finalScore: dbQuizAttempt.finalScore,
     questionsAnswered: dbQuizAttempt.questionAnswered,
     currentStreak: dbQuizAttempt.currentStreak,
     status: dbQuizAttempt.status,
-    dueDate: new Date(dbQuizAttempt.dueDate),
+    dueDate: convertToLocalDate(dbQuizAttempt.dueDate),
     currentBonus: dbQuizAttempt.currentBonus || null,
   }
 }

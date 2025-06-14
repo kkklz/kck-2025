@@ -171,12 +171,12 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
     if (data !== null) {
       quizAttempt.value = dbQuizAttemptToQuizAttempt(data)
-      if (new Date(data.dueDate).getTime() < Date.now()) {
+      if (new Date(quizAttempt.value.dueDate).getTime() > Date.now()) {
         currentStage.value = 'continue'
       }
       else {
         await submitQuizAttempt()
-        quizAttempt.value = null
+        clearStore()
         currentStage.value = 'start'
       }
     }
@@ -323,7 +323,6 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
   const startNewQuizAttempt = async () => {
     await submitQuizAttempt()
-    await startQuizAttempt()
   }
 
   return {

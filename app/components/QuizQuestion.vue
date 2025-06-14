@@ -93,12 +93,16 @@ function updateTimer() {
   if (!quizAttempt.value) {
     return
   }
+
   const now = new Date().getTime()
   const due = quizAttempt.value.dueDate.getTime()
   const difference = Math.floor((due - now) / 1000)
-  // strefy czasowe nie dzialaja wiec timer po F5 nie dziala (w bazie danych zapisywane sa daty w +00:00)
   if (difference <= 0) {
-    // logika jak czas sie skonczyl
+    (async function () {
+      await quizAttemptStore.submitQuizAttempt()
+      if (intervalId.value)
+        clearInterval(intervalId.value)
+    })()
   }
   else {
     timeLeft.value = difference
