@@ -50,6 +50,10 @@
       />
     </div>
 
+    <div v-else-if="currentStage === 'bonus'">
+      <QuizBonus :quiz-attempt="quizAttempt" />
+    </div>
+
     <div
       v-else
       :class="{'slideIn': animateRef}"
@@ -141,6 +145,9 @@ async function endQuizAttempt() {
 
 async function handleSubmitQuestion() {
   animate()
+  if (quizAttempt.value?.currentBonus === '50_50') {
+    await quizAttemptStore.endBonus(0)
+  }
   await quizAttemptStore.answerQuestion(selectedAnswers.value)
   if (selectedAnswers.value)
     selectedAnswers.value = ['']

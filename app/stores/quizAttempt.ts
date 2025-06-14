@@ -2,11 +2,14 @@ import type { Database } from '~/types/database.types'
 import type { QuizAttempt } from '~/types/quizAttempt'
 import { nanoid } from 'nanoid'
 
+export type Stage =
+  'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary' | 'bonus'
+
 export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   const quizAttempt = ref<QuizAttempt | null>(null)
   const error = ref<string | null>(null)
   const loading = ref<boolean>(false)
-  const currentStage = ref<'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary' | 'bonus'>('start')
+  const currentStage = ref<Stage>('start')
   const userAttempts = ref(0)
 
   const quizStore = useQuizStore()
@@ -26,6 +29,13 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   }
 
   const continueQuiz = () => {
+    if (quizAttempt.value) {
+      if (quizAttempt.value.currentBonus !== null) {
+        currentStage.value = 'bonus'
+
+        return
+      }
+    }
     currentStage.value = 'quiz'
   }
 
@@ -260,7 +270,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
         const randomBonus = bonuses[Math.floor(Math.random() * bonuses.length)] ?? null
         quizAttempt.value.currentBonus = randomBonus
         quizAttempt.value.currentStreak = 0
-        // currentStage.value = 'bonus'
+        currentStage.value = 'bonus'
       }
     }
     else {
@@ -285,6 +295,20 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     }
 
     loading.value = false
+  }
+
+  const endBonus = async (pointsGained: number) => {
+    if (quizAttempt.value) {
+      quizAttempt.value.finalScore += pointsGained
+      quizAttempt.value.currentBonus = null
+
+      const { error: err } = await supabase.from(QUIZ_ATTEMPT_TABLE).update(quizAttemptToDbQuizAttempt(quizAttempt.value)).eq('id', quizAttempt.value.id)
+      if (err) {
+        error.value = err.message
+      }
+
+      currentStage.value = 'quiz'
+    }
   }
 
   // --- Wcześniejsze zakończenie quizu przez użytkownika ---
@@ -327,6 +351,30 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     await submitQuizAttempt()
   }
 
+  const updateCurrentStage = (stage: Stage) => {
+    currentStage.value = stage
+  }
+
+  const filteredAnswers = computed(() => {
+    if (quizAttempt.value?.currentBonus === '50_50' && currentQuestion.value !== null) {
+      const incorrectAnswers = currentQuestion.value?.answers.filter(a => !a.correct)
+
+      // Oblicz ile niepoprawnych odpowiedzi trzeba usunąć (połowa, zaokrąglona w dół)
+      const numToRemove = Math.ceil(incorrectAnswers.length / 2)
+
+      // Wybierz losowe niepoprawne odpowiedzi do usunięcia
+      const toRemove = incorrectAnswers
+        .sort(() => Math.random() - 0.5)
+        .slice(0, numToRemove)
+
+      // Zwróć nową tablicę z usuniętymi wybranymi niepoprawnymi odpowiedziami
+      return currentQuestion.value?.answers.filter(a => !toRemove.includes(a))
+    }
+    else {
+      return currentQuestion.value?.answers
+    }
+  })
+
   return {
     quizAttempt,
     error,
@@ -346,5 +394,8 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     continueQuiz,
     startNewQuizAttempt,
     clearStore,
+    endBonus,
+    updateCurrentStage,
+    filteredAnswers,
   }
 })

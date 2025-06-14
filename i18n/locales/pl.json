@@ -16,7 +16,8 @@
     "student": "Student",
     "yes": "Tak",
     "No": "Nie",
-    "no": "Nie"
+    "no": "Nie",
+    "okay": "Okej"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -108,5 +109,13 @@
     "questions-count": "Ilość odpowiedzi",
     "attempt-time": "Długość podejścia",
     "back-to-course": "Powrót do kursu"
+  },
+  "bonus": {
+    "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",
+    "obtained-bonus": "Otrzymany bonus to",
+    "shooter": "Minigra - strzelnica",
+    "memory": "Minigra - memory",
+    "50_50": "50 / 50",
+    "bonus_time": "Dodatkowy czas"
   }
 }

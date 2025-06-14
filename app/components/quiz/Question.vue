@@ -32,9 +32,6 @@
         : 'Wybierz wszystkie poprawne odpowiedzi.' }}
     </div>
 
-    <div>
-      {{ model }}
-    </div>
     <!-- Odpowiedzi -->
     <div v-if="question">
       <v-radio-group
@@ -44,7 +41,7 @@
         hide-details
       >
         <v-radio
-          v-for="answer in question.answers"
+          v-for="answer in filteredAnswers"
           :key="answer.id"
           :label="answer.answer"
           :value="answer.id"
@@ -53,7 +50,7 @@
 
       <div v-else>
         <v-checkbox
-          v-for="answer in question.answers"
+          v-for="answer in filteredAnswers"
           :key="answer.id"
           v-model="model"
           hide-details
@@ -80,7 +77,7 @@ const props = defineProps<{ question: Question | null, questionIndexLabel?: stri
 const model = defineModel<string[]>()
 
 const quizAttemptStore = useQuizAttemptStore()
-const { quizAttempt } = storeToRefs(quizAttemptStore)
+const { quizAttempt, filteredAnswers } = storeToRefs(quizAttemptStore)
 
 const timeLeft = ref(0)
 const intervalId = ref<NodeJS.Timeout | null>(null)
