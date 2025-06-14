@@ -42,35 +42,39 @@
       </v-btn>
     </v-card>
 
-    <QuizQuestion
+    <div
       v-else
-      v-model="selectedAnswers"
-      :question="currentQuestion"
+      :class="{'slideIn': animateRef}"
     >
-      <template #quiz-title>
-        <span>{{ currentQuiz?.description }}</span>
-      </template>
+      <QuizQuestion
+        v-model="selectedAnswers"
+        :question="currentQuestion"
+      >
+        <template #quiz-title>
+          <span>{{ currentQuiz?.description }}</span>
+        </template>
 
-      <template #end>
-        <v-btn
-          v-if="currentIndex < totalQuestions - 1"
-          @click="endQuizAttempt"
-        >
-          {{ $t('quiz.end-quiz') }}
-        </v-btn>
-      </template>
+        <template #end>
+          <v-btn
+            v-if="currentIndex < totalQuestions - 1"
+            @click="endQuizAttempt"
+          >
+            {{ $t('quiz.end-quiz') }}
+          </v-btn>
+        </template>
 
-      <template #confirm>
-        <v-btn
-          color="primary"
-          @click="handleSubmitQuestion"
-        >
-          {{ currentIndex < totalQuestions - 1
-            ? $t('quiz.next-question')
-            : $t('quiz.end-quiz') }}
-        </v-btn>
-      </template>
-    </QuizQuestion>
+        <template #confirm>
+          <v-btn
+            color="primary"
+            @click="handleSubmitQuestion"
+          >
+            {{ currentIndex < totalQuestions - 1
+              ? $t('quiz.next-question')
+              : $t('quiz.end-quiz') }}
+          </v-btn>
+        </template>
+      </QuizQuestion>
+    </div>
   </v-container>
 </template>
 
@@ -83,6 +87,7 @@ const { currentQuestion, currentStage, loading, userAttempts } = storeToRefs(qui
 const router = useRouter()
 
 const selectedAnswers = ref<string[]>([''])
+const animateRef = ref(false)
 
 const courseId = route.params.id as string
 const quizId = route.params.quizId as string
@@ -123,6 +128,32 @@ async function endQuizAttempt() {
 }
 
 async function handleSubmitQuestion() {
+  animate()
   await quizAttemptStore.answerQuestion(selectedAnswers.value)
 }
+
+function animate() {
+  animateRef.value = true
+  setTimeout(() => {
+    animateRef.value = false
+  }, 500)
+}
 </script>
+
+<style scoped>
+.slideIn {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>
