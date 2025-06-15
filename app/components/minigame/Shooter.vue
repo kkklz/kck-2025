@@ -116,7 +116,7 @@ function addTarget() {
   const x = Math.floor(Math.random() * maxX.value)
   const y = Math.floor(Math.random() * maxY.value)
   const id = nanoid()
-  const points = Math.floor(Math.random() * 10)
+  const points = Math.floor(Math.random() * 5) + 1
   const target: Target = {
     id,
     x,

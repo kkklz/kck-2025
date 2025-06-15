@@ -126,7 +126,7 @@
   },
   "minigame": {
     "shooter-title": "Minigra - strzelnica",
-    "shooter-instructions": "Zestrzel jak najwięcej celów w ciągu 30 sekund, otrzymując od 1 do 10 pkt. za każdy cel.",
+    "shooter-instructions": "Zestrzel jak najwięcej celów w ciągu 30 sekund, otrzymując od 1 do 5 pkt. za każdy cel.",
     "shooter-gained-points": "Udało Ci się zdobyć {points} punktów!",
     "memory-title": "Minigra - Memory",
     "memory-instructions": "Odkryj jak najwięcej par kart w ciągu 30 sekund! Jeżeli uda ci się odkryć wszystkie przed czasem, karty się zresetują."
