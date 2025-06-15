@@ -78,7 +78,8 @@
     "quiz-list": "Lista quizów",
     "ranking": "Ranking",
     "ranking-empty": "Ranking jest pusty",
-    "quiz-list-empty": "Brak quizów"
+    "quiz-list-empty": "Brak quizów",
+    "points-short": "pkt."
   },
   "quiz": {
     "quiz": "Quiz",

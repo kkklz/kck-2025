@@ -161,6 +161,7 @@ export function dbUserToUser(dbUser: DBUser): User {
     lastName: dbUser.lastName,
     role: dbUser.role,
     studentIndex: dbUser.studentIndex || null,
+    photoUrl: dbUser.photoUrl || null,
   }
 }
 

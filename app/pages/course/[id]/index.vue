@@ -4,7 +4,9 @@
       :items="breadcrumbs"
     />
 
-    <v-card class="mx-5">
+    <v-card
+      class="mx-5"
+    >
       <v-img
         :src="currentCourse?.photoUrl || '/default-course-image-large.webp'"
         height="250"
@@ -17,8 +19,14 @@
       </v-img>
 
       <div class="p-4 gap-10 grid grid-cols-1 md:grid-cols-2">
-        <v-card>
-          <v-card-title>{{ $t('courses.quiz-list') }}</v-card-title>
+        <v-card
+          class="h-min"
+          elevation="0"
+          border
+        >
+          <v-card-title class="bg-primary">
+            {{ $t('courses.quiz-list') }}
+          </v-card-title>
 
           <v-list v-if="quizzes && quizzes.length > 0">
             <v-list-item
@@ -40,8 +48,10 @@
 
         <v-card
           class="h-min"
+          elevation="0"
+          border
         >
-          <v-card-title>
+          <v-card-title class="bg-secondary">
             {{ $t('courses.ranking') }}
           </v-card-title>
 
@@ -50,32 +60,60 @@
               v-for="place in ranking"
               :key="place.position"
             >
+              <template #prepend>
+                <span
+                  class="text-gray-500 w-10"
+                  :class="place.position === 1
+                    ? 'text-secondary text-2xl'
+                    : place.position === 2
+                      ? 'text-secondary text-xl'
+                      : place.position === 3
+                        ? 'text-secondary text-lg'
+                        : ''"
+                >
+                  #{{ place.position }}
+                </span>
+
+                <v-avatar>
+                  <v-img :src="place.user.photoUrl || '/default-avatar.webp'" />
+                </v-avatar>
+              </template>
+
               <v-list-item-title>
-                {{ place.position }}. {{ $t('users.user-name-with-index', [
-                  place.user.firstName,
-                  place.user.lastName,
-                  place.user.studentIndex,
-                ]) }}
-                {{ place.points }}
+                {{ place.user.firstName }} {{ place.user.lastName }}
               </v-list-item-title>
 
-              <v-btn
-                v-if="place.reward && place.reward.length > 0"
-                density="compact"
-                elevation="0"
-              >
-                <v-icon icon="mdi-trophy" />
+              <v-list-item-subtitle v-if="place.user.studentIndex">
+                {{ place.user.studentIndex }}
+              </v-list-item-subtitle>
 
-                <v-tooltip activator="parent">
-                  <div
-                    v-for="reward in place.reward"
-                    :key="reward"
-                  >
-                    <v-icon icon="mdi-circle-small" />
-                    {{ reward }}
-                  </div>
-                </v-tooltip>
-              </v-btn>
+              <template #append>
+                <v-chip
+                  color="secondary"
+                  class="!text-lg"
+                  density="comfortable"
+                >
+                  {{ place.points }} {{ $t('courses.points-short') }}
+                </v-chip>
+
+                <v-btn
+                  v-if="place.reward && place.reward.length > 0"
+                  density="compact"
+                  elevation="0"
+                >
+                  <v-icon icon="mdi-trophy" />
+
+                  <v-tooltip activator="parent">
+                    <div
+                      v-for="reward in place.reward"
+                      :key="reward"
+                    >
+                      <v-icon icon="mdi-circle-small" />
+                      {{ reward }}
+                    </div>
+                  </v-tooltip>
+                </v-btn>
+              </template>
             </v-list-item>
           </v-list>
 
