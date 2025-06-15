@@ -75,7 +75,10 @@
     "course-description": "Opis kursu",
     "course-photo": "Zdjęcie kursu",
     "courses-view": "Widok kursów",
-    "quiz-list": "Lista quizów"
+    "quiz-list": "Lista quizów",
+    "ranking": "Ranking",
+    "ranking-empty": "Ranking jest pusty",
+    "quiz-list-empty": "Brak quizów"
   },
   "quiz": {
     "quiz": "Quiz",

@@ -1,12 +1,15 @@
 import type { QueryError } from '@supabase/supabase-js'
 import type { Course } from '~/types/course'
 import type { Database } from '~/types/database.types'
+import type { RankingPlace } from '~/types/ranking'
 
 export const useCourseStore = defineStore('course', () => {
   const currentCourse: Ref<Course | null> = ref(null)
   const courses: Ref<Course[]> = ref([])
   const error: Ref<QueryError | null> = ref(null)
   const loading: Ref<boolean> = ref(false)
+
+  const ranking = ref<RankingPlace[]>([])
 
   const userStore = useUserStore()
   const { user } = storeToRefs(userStore)
@@ -227,6 +230,38 @@ export const useCourseStore = defineStore('course', () => {
     }
   }
 
+  async function fetchRanking(courseId: string) {
+    error.value = null
+    loading.value = true
+    ranking.value = []
+
+    try {
+      const { data, error: rankingError } = await supabase.from('quiz_attempt')
+        .select(`
+          user(*),
+          finalScore,
+          quiz(*, course(*))
+        `)
+        .not('quiz', 'is', null)
+        .not('quiz.course', 'is', null)
+        .eq('quiz.course.id', courseId)
+
+      if (rankingError)
+        throw rankingError
+
+      if (!data || data.length === 0)
+        return
+
+      ranking.value = dbRankingToRanking(data)
+    }
+    catch (err: any) {
+      error.value = err
+    }
+    finally {
+      loading.value = false
+    }
+  }
+
   return {
     currentCourse,
     courses,
@@ -236,5 +271,7 @@ export const useCourseStore = defineStore('course', () => {
     fetchCourse,
     addOrEditCourse,
     deleteCourse,
+    ranking,
+    fetchRanking,
   }
 })

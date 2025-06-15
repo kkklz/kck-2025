@@ -20,17 +20,7 @@
         <v-card>
           <v-card-title>{{ $t('courses.quiz-list') }}</v-card-title>
 
-          <v-list>
-            <v-list-item
-              v-if="quizzesLoading"
-            >
-              <v-skeleton-loader type="list-item" />
-
-              <v-skeleton-loader type="list-item" />
-
-              <v-skeleton-loader type="list-item" />
-            </v-list-item>
-
+          <v-list v-if="quizzes && quizzes.length > 0">
             <v-list-item
               v-for="(quiz, idx) in quizzes"
               :key="quiz.id"
@@ -38,6 +28,42 @@
               :to="`/course/${currentCourse?.id}/quiz/${quiz.id}`"
             >
               <v-list-item-title><span class="text-gray-500">#{{ idx + 1 }}</span> {{ quiz.description }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+
+          <v-list v-else>
+            <v-list-item>
+              {{ $t('courses.quiz-list-empty') }}
+            </v-list-item>
+          </v-list>
+        </v-card>
+
+        <v-card
+          class="h-min"
+        >
+          <v-card-title>
+            {{ $t('courses.ranking') }}
+          </v-card-title>
+
+          <v-list v-if="ranking.length > 0">
+            <v-list-item
+              v-for="place in ranking"
+              :key="place.position"
+            >
+              <v-list-item-title>
+                {{ place.position }}. {{ $t('users.user-name-with-index', [
+                  place.user.firstName,
+                  place.user.lastName,
+                  place.user.studentIndex,
+                ]) }}
+                {{ place.points }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+
+          <v-list v-else>
+            <v-list-item>
+              {{ $t('courses.ranking-empty') }}
             </v-list-item>
           </v-list>
         </v-card>
@@ -55,8 +81,8 @@ const courseId = route.params.id as string
 const courseStore = useCourseStore()
 const quizStore = useQuizStore()
 
-const { currentCourse } = storeToRefs(courseStore)
-const { quizzes, loading: quizzesLoading } = storeToRefs(quizStore)
+const { currentCourse, ranking } = storeToRefs(courseStore)
+const { quizzes } = storeToRefs(quizStore)
 
 const breadcrumbs = ref<{ title: string, to?: string }[]>()
 onBeforeMount(async () => {
@@ -70,6 +96,7 @@ onBeforeMount(async () => {
   Promise.all([
     await courseStore.fetchCourse(courseId),
     await quizStore.fetchQuizzes(courseId),
+    await courseStore.fetchRanking(courseId),
   ])
 })
 </script>
