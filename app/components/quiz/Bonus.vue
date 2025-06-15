@@ -28,6 +28,8 @@
     >
       <v-container class="!p-0">
         <MinigameShooter v-if="quizAttempt.currentBonus === 'minigame_shooter'" />
+
+        <MinigameMemory v-if="quizAttempt.currentBonus === 'minigame_memory'" />
       </v-container>
     </v-overlay>
   </div>
@@ -72,6 +74,12 @@ async function handleStartBonus() {
     }
     case 'minigame_shooter': {
       showMinigame.value = true
+      break
+    }
+
+    case 'minigame_memory': {
+      showMinigame.value = true
+      break
     }
   }
 }
