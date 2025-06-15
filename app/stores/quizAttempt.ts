@@ -103,6 +103,14 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     error.value = null
     quizAttempt.value.status = 'submitted'
 
+    // Dodatkowe punkty za skończenie przed czasem
+    if (currentQuiz.value) {
+      const quizUserTime = (Date.now() - quizAttempt.value.attemptDate.getTime()) / 1000
+      const maxPoints = currentQuiz.value.questions.reduce((acc, currVal) => acc + currVal.points, 0)
+      const additionalPoints = Math.floor((currentQuiz.value.timeLimit / quizUserTime * maxPoints) / currentQuiz.value.questions.length)
+      quizAttempt.value.finalScore += additionalPoints
+    }
+
     const { error: err } = await supabase
       .from(QUIZ_ATTEMPT_TABLE)
       .update(quizAttemptToDbQuizAttempt(quizAttempt.value))

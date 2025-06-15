@@ -79,6 +79,7 @@
         <template #confirm>
           <v-btn
             color="primary"
+            :loading="loading"
             @click="handleSubmitQuestion"
           >
             {{ currentQuestionIndex < totalQuestions - 1
