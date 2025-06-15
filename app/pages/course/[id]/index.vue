@@ -58,6 +58,24 @@
                 ]) }}
                 {{ place.points }}
               </v-list-item-title>
+
+              <v-btn
+                v-if="place.reward && place.reward.length > 0"
+                density="compact"
+                elevation="0"
+              >
+                <v-icon icon="mdi-trophy" />
+
+                <v-tooltip activator="parent">
+                  <div
+                    v-for="reward in place.reward"
+                    :key="reward"
+                  >
+                    <v-icon icon="mdi-circle-small" />
+                    {{ reward }}
+                  </div>
+                </v-tooltip>
+              </v-btn>
             </v-list-item>
           </v-list>
 

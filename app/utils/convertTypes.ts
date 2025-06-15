@@ -204,7 +204,7 @@ export function dbRankingToRanking(dbRanking: {
   finalScore: number
   user: DBUser
   quiz: DBQuiz & { course: DBCourse }
-}[]): RankingPlace[] {
+}[], prizes: Prize[]): RankingPlace[] {
   const userBestScores = dbRanking.reduce((acc, attempt) => {
     const userId = attempt.user.id
     const quizId = attempt.quiz.id
@@ -247,6 +247,13 @@ export function dbRankingToRanking(dbRanking: {
     .map((place, index) => ({
       ...place,
       position: index + 1,
+      reward: prizes.filter((p) => {
+        if (Array.isArray(p.place)) {
+          return index + 1 >= p.place[0] && index + 1 <= p.place[1]
+        }
+
+        return index + 1 === p.place
+      }).map(p => p.reward),
     }))
 
   return ranking

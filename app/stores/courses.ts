@@ -252,7 +252,7 @@ export const useCourseStore = defineStore('course', () => {
       if (!data || data.length === 0)
         return
 
-      ranking.value = dbRankingToRanking(data)
+      ranking.value = dbRankingToRanking(data, currentCourse.value?.prizes || [])
     }
     catch (err: any) {
       error.value = err
