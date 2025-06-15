@@ -242,6 +242,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
     if (!question) {
       error.value = 'Question not found'
+      await submitQuizAttempt()
 
       return
     }
