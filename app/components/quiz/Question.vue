@@ -44,7 +44,9 @@
           v-for="answer in filteredAnswers"
           :key="answer.id"
           :label="answer.answer"
-          :value="answer.id"
+          :value="[
+            answer.id,
+          ]"
         />
       </v-radio-group>
 
