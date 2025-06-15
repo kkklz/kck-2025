@@ -271,12 +271,14 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     quizAttempt.value.finalScore += points
     quizAttempt.value.questionsAnswered++
 
-    if (currentQuiz.value && quizAttempt.value.questionsAnswered >= currentQuiz.value.questions.length) {
+    const isLastQuestion = currentQuiz.value && quizAttempt.value.questionsAnswered >= currentQuiz.value.questions.length
+
+    if (isLastQuestion) {
       currentStage.value = 'summary'
     }
 
     // --- OBSŁUGA STREAKA I BONUSU ---
-    if (isPerfect) {
+    if (isPerfect && !isLastQuestion) {
       quizAttempt.value.currentStreak++
       if (quizAttempt.value.currentStreak >= 3 && currentQuestionIndex) {
         const bonuses: ('minigame_shooter' | 'minigame_memory' | '50_50' | 'bonus_time')[] = [
@@ -322,11 +324,6 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
       currentStage.value = 'quiz'
     }
-  }
-
-  // --- Wcześniejsze zakończenie quizu przez użytkownika ---
-  const cancelQuizAttempt = async () => {
-    await submitQuizAttempt()
   }
 
   // --- Wydłużenie czasu na quiz ---
@@ -398,7 +395,6 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     startQuizAttempt,
     answerQuestion,
     submitQuizAttempt,
-    cancelQuizAttempt,
     currentQuestionIndex,
     currentQuestion,
     addTimeToQuizAttempt,
