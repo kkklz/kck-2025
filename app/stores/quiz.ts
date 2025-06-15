@@ -99,6 +99,42 @@ export const useQuizStore = defineStore('quiz', () => {
     }
 
     quizzes.value = quizData.map(q => dbQuizToQuiz(q, []))
+
+    const { data: highestScoreData, error: highestScoreError } = await supabase.from('quiz_attempt')
+      .select(`
+          user(*),
+          finalScore,
+          quiz(*, course(*))
+        `)
+      .not('quiz', 'is', null)
+      .not('quiz.course', 'is', null)
+      .eq('quiz.course.id', courseId)
+
+    if (highestScoreError) {
+      error.value = highestScoreError
+
+      return
+    }
+
+    if (!highestScoreData || highestScoreData.length === 0)
+      return
+
+    const { user } = useUserStore()
+
+    quizzes.value = quizzes.value?.map((q) => {
+      const highestScoreAttempts = highestScoreData
+        .filter(attempt => attempt.quiz.id === q.id && attempt.user.id === user?.id)
+
+      if (highestScoreAttempts.length === 0)
+        return { ...q }
+
+      const highestScore = highestScoreAttempts.reduce((max, attempt) => Math.max(max, attempt.finalScore || 0), 0)
+
+      return {
+        ...q,
+        highScore: highestScore,
+      }
+    })
   }
 
   async function fetchQuiz(quizId: string) {

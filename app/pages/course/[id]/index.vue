@@ -68,7 +68,21 @@
               link
               :to="`/course/${currentCourse?.id}/quiz/${quiz.id}`"
             >
-              <v-list-item-title><span class="text-gray-500">#{{ idx + 1 }}</span> {{ quiz.description }}</v-list-item-title>
+              <v-list-item-title>
+                <span class="text-gray-500">#{{ idx + 1 }}</span>
+                {{ quiz.description }}
+                <v-spacer />
+
+                <v-chip
+                  v-if="quiz.highScore !== undefined"
+                  density="compact"
+                  color="secondary"
+                  prepend-icon="mdi-medal"
+                  variant="flat"
+                >
+                  {{ $t('quiz.your-highscore') }}: {{ quiz.highScore }} {{ $t('courses.points-short') }}
+                </v-chip>
+              </v-list-item-title>
             </v-list-item>
           </v-list>
 

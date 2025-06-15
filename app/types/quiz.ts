@@ -3,6 +3,7 @@ import type { QuizSummary } from './quizSummary'
 
 export interface Quiz extends QuizSummary {
   questions: Question[]
+  highScore?: number
 }
 
 export type InputQuiz = Omit<Quiz, 'id' | 'courseId' | 'questions'> & { questions: InputQuestion[] }

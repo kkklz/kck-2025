@@ -116,7 +116,8 @@
     "questions-count": "Ilość odpowiedzi",
     "attempt-time": "Długość podejścia",
     "back-to-course": "Powrót do kursu",
-    "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną"
+    "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną",
+    "your-highscore": "Twój najlepszy wynik"
   },
   "bonus": {
     "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",
