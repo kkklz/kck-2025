@@ -1,11 +1,19 @@
 <template>
   <div
-    class="absolute"
-    :style="{'width': `${w}px`,
-             'height': `${h}px`,
-             'left': `${x}px`,
-             'top': `${y}px`}"
-    @click="$emit('shoot')"
+    class="transition-all duration-300 absolute"
+    :style="{
+      'width': `${w}px`,
+      'height': `${h}px`,
+      'left': `${x}px`,
+      'top': `${y}px`,
+      'transform': isShot
+        ? 'scale(0)'
+        : 'scale(1)',
+      'opacity': isShot
+        ? 0
+        : 1,
+    }"
+    @click="handleShot"
   >
     <svg
       v-if="blobType === 0"
@@ -55,7 +63,19 @@
 
 <script setup lang="ts">
 const { width: w, height: h, x, y } = defineProps<{ width: number, height: number, x: number, y: number }>()
-defineEmits<{ shoot: [] }>()
+const emit = defineEmits<{ shoot: [] }>()
+
+const isShot = ref(false)
+
+function handleShot() {
+  if (!isShot.value) {
+    isShot.value = true
+    // Poczekaj na zakończenie animacji przed emitowaniem eventu
+    setTimeout(() => {
+      emit('shoot')
+    }, 300)
+  }
+}
 
 const blobType = ref<number>(0)
 
