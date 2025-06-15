@@ -124,7 +124,7 @@ function handleBeginMinigame() {
 
   timeInterval.value = setInterval(() => {
     minigameTime.value++
-    if (minigameTime.value >= 60) {
+    if (minigameTime.value >= 30) {
       if (timeInterval.value && targetsInterval.value) {
         clearInterval(timeInterval.value)
         clearInterval(targetsInterval.value)
