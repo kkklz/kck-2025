@@ -79,7 +79,9 @@
     "ranking": "Ranking",
     "ranking-empty": "Ranking jest pusty",
     "quiz-list-empty": "Brak quizów",
-    "points-short": "pkt."
+    "points-short": "pkt.",
+    "courses-list": "Lista kursów",
+    "filter": "Filtrowanie"
   },
   "quiz": {
     "quiz": "Quiz",
