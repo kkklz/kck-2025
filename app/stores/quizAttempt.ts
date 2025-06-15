@@ -106,9 +106,14 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     // Dodatkowe punkty za skończenie przed czasem
     if (currentQuiz.value) {
       const quizUserTime = (Date.now() - quizAttempt.value.attemptDate.getTime()) / 1000
-      const maxPoints = currentQuiz.value.questions.reduce((acc, currVal) => acc + currVal.points, 0)
-      const additionalPoints = Math.floor((currentQuiz.value.timeLimit / quizUserTime * maxPoints) / currentQuiz.value.questions.length)
-      quizAttempt.value.finalScore += additionalPoints
+      const timeRatio = currentQuiz.value.timeLimit / quizUserTime
+
+      // Współczynnik będzie się wahał od 1.0 do 2.0
+      // timeRatio > 2 oznacza, że użytkownik skończył dwa razy szybciej niż limit
+      // timeRatio = 1 oznacza, że użytkownik wykorzystał cały dostępny czas
+      const timeBonus = Math.min(Math.max(timeRatio / 2, 1), 2)
+
+      quizAttempt.value.finalScore = Math.round(quizAttempt.value.finalScore * timeBonus)
     }
 
     const { error: err } = await supabase
@@ -190,7 +195,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
     if (data !== null) {
       quizAttempt.value = dbQuizAttemptToQuizAttempt(data)
-      if (new Date(quizAttempt.value.dueDate).getTime() > Date.now()) {
+      if (new Date(quizAttempt.value.dueDate).getTime() > Date.now() && quizAttempt.value.questionsAnswered < currentQuiz.value.questions.length) {
         currentStage.value = 'continue'
       }
       else {
@@ -266,6 +271,10 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     quizAttempt.value.finalScore += points
     quizAttempt.value.questionsAnswered++
 
+    if (currentQuiz.value && quizAttempt.value.questionsAnswered >= currentQuiz.value.questions.length) {
+      currentStage.value = 'summary'
+    }
+
     // --- OBSŁUGA STREAKA I BONUSU ---
     if (isPerfect) {
       quizAttempt.value.currentStreak++
@@ -296,11 +305,6 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       loading.value = false
 
       return
-    }
-
-    // --- Automatyczne zakończenie quizu po ostatnim pytaniu ---
-    if (currentQuiz.value && quizAttempt.value.questionsAnswered >= currentQuiz.value.questions.length) {
-      await submitQuizAttempt()
     }
 
     loading.value = false

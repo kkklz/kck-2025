@@ -141,7 +141,6 @@ function goBack() {
 
 async function endQuizAttempt() {
   await quizAttemptStore.submitQuizAttempt()
-  router.push(`/course/${courseId}`)
 }
 
 async function handleSubmitQuestion() {
@@ -150,6 +149,9 @@ async function handleSubmitQuestion() {
     await quizAttemptStore.endBonus(0)
   }
   await quizAttemptStore.answerQuestion(selectedAnswers.value)
+  if (currentQuestionIndex.value >= totalQuestions.value) {
+    await quizAttemptStore.submitQuizAttempt()
+  }
   if (selectedAnswers.value)
     selectedAnswers.value = ['']
 }
