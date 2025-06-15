@@ -15,8 +15,41 @@
       >
         <v-card-title class="text-white">
           {{ currentCourse?.name }}
+          <div class="flex gap-4">
+            <v-chip
+              label
+              density="compact"
+              prepend-icon="mdi-file-document"
+              variant="elevated"
+              class="bg-green"
+            >
+              {{ $t('admin.quizes-number', [
+                currentCourse?.quizzes.length,
+              ]) }}
+            </v-chip>
+
+            <v-chip
+              label
+              density="compact"
+              prepend-icon="mdi-account"
+              variant="elevated"
+              class="bg-green"
+            >
+              {{ $t('admin.signed-users-number', [
+                currentCourse?.users.length,
+              ]) }}
+            </v-chip>
+          </div>
         </v-card-title>
       </v-img>
+
+      <v-card-subtitle class="my-4">
+        <b>{{ $t('courses.course-description') }}</b>
+
+        <br> {{ currentCourse?.description }}
+      </v-card-subtitle>
+
+      <v-divider />
 
       <div class="p-4 gap-10 grid grid-cols-1 md:grid-cols-2">
         <v-card
