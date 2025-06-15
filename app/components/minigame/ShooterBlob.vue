@@ -62,14 +62,22 @@
 </template>
 
 <script setup lang="ts">
+import { Howl } from 'howler'
+
 const { width: w, height: h, x, y } = defineProps<{ width: number, height: number, x: number, y: number }>()
 const emit = defineEmits<{ shoot: [] }>()
 
 const isShot = ref(false)
 
+const sound = new Howl({
+  src: ['/gun-sound.mp3'],
+  volume: 0.5,
+})
+
 function handleShot() {
   if (!isShot.value) {
     isShot.value = true
+    sound.play()
     // Poczekaj na zakończenie animacji przed emitowaniem eventu
     setTimeout(() => {
       emit('shoot')
