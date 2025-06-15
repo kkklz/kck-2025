@@ -81,7 +81,8 @@
     "quiz-list-empty": "Brak quizów",
     "points-short": "pkt.",
     "courses-list": "Lista kursów",
-    "filter": "Filtrowanie"
+    "filter": "Filtrowanie",
+    "scroll-to-courses": "Przejdź do listy kursów"
   },
   "quiz": {
     "quiz": "Quiz",
