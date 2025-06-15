@@ -38,7 +38,7 @@
       >
         <v-container>
           <v-row>
-            <v-col cols="1">
+            <v-col cols="2">
               <v-number-input
                 v-model="newFrom"
                 :min="1"
@@ -49,7 +49,7 @@
               />
             </v-col>
 
-            <v-col cols="1">
+            <v-col cols="2">
               <v-number-input
                 v-model="newTo"
                 :min="1"

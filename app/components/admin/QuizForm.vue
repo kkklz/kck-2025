@@ -100,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+import type { PostgrestError } from '@supabase/supabase-js'
 import type { Question } from '~/types/question'
 import { nanoid } from 'nanoid'
 import QuizQuestionEditor from '~/components/admin/QuizQuestionEditor.vue'
@@ -172,10 +173,17 @@ function updateQuestion(id: number, newVal: Question) {
 }
 
 async function handleSubmit() {
-  loading.value = true
-  error.value = null
   if (!description.value.trim())
     return
+
+  if (questions.value.some(q => !q.content.trim() || q.answers.length < 2 || !q.answers.some(a => a.correct))) {
+    error.value = { message: t('quiz.invalid-questions') } as PostgrestError
+
+    return
+  }
+
+  loading.value = true
+  error.value = null
 
   if (quizId !== undefined) {
     await quizStore.updateQuiz(quizId, { id: quizId, description: description.value, maxAttempts: maxAttempts.value, questions: questions.value, timeLimit: timeLimit.value })

@@ -115,7 +115,8 @@
     "achievied-points": "Ilość zdobytych punktów",
     "questions-count": "Ilość odpowiedzi",
     "attempt-time": "Długość podejścia",
-    "back-to-course": "Powrót do kursu"
+    "back-to-course": "Powrót do kursu",
+    "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną"
   },
   "bonus": {
     "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",
