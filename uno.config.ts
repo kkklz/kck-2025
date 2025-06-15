@@ -4,9 +4,8 @@ export default defineConfig({
   presets: [
     presetWind4(),
     presetWebFonts({
-      provider: 'google',
+      provider: 'bunny',
       fonts: {
-        sans: 'Open Sans',
         roboto: 'Roboto',
       },
     }),

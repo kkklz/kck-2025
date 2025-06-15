@@ -2,10 +2,15 @@ import type { Database } from '~/types/database.types'
 import type { QuizAttempt } from '~/types/quizAttempt'
 import { nanoid } from 'nanoid'
 
+export type Stage =
+  'start' | 'continue' | 'quiz' | 'no-attempts' | 'summary' | 'bonus'
+
 export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   const quizAttempt = ref<QuizAttempt | null>(null)
   const error = ref<string | null>(null)
   const loading = ref<boolean>(false)
+  const currentStage = ref<Stage>('start')
+  const userAttempts = ref(0)
 
   const quizStore = useQuizStore()
   const userStore = useUserStore()
@@ -15,47 +20,26 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
 
   const QUIZ_ATTEMPT_TABLE = 'quiz_attempt'
 
-  const getStartedQuizAttempt = async () => {
-    if (!user.value?.id) {
-      error.value = 'User not found'
-
-      return
-    }
-
-    if (!currentQuiz.value) {
-      error.value = 'No quiz selected'
-
-      return
-    }
-
-    loading.value = true
+  const clearStore = () => {
+    quizAttempt.value = null
     error.value = null
-
-    const { data, error: err } = await supabase
-      .from(QUIZ_ATTEMPT_TABLE)
-      .select('*')
-      .eq('quizId', currentQuiz.value.id)
-      .eq('userId', user.value.id)
-      .eq('status', 'started')
-      .single()
-
-    if (err) {
-      error.value = err.message
-
-      return
-    }
-
-    quizAttempt.value = dbQuizAttemptToQuizAttempt(data)
     loading.value = false
+    currentStage.value = 'start'
+    userAttempts.value = 0
+  }
+
+  const continueQuiz = () => {
+    if (quizAttempt.value) {
+      if (quizAttempt.value.currentBonus !== null) {
+        currentStage.value = 'bonus'
+
+        return
+      }
+    }
+    currentStage.value = 'quiz'
   }
 
   const startQuizAttempt = async () => {
-    await getStartedQuizAttempt()
-
-    if (quizAttempt.value) {
-      return
-    }
-
     if (!currentQuiz.value) {
       error.value = 'No quiz selected'
 
@@ -80,13 +64,20 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       questionsAnswered: 0,
       currentStreak: 0,
       status: 'started',
-      dueDate: new Date(Date.now() + 1000 * 60 * currentQuiz.value.timeLimit),
+      dueDate: new Date(Date.now() + 1000 * currentQuiz.value.timeLimit),
       currentBonus: null,
     }
 
-    const { error: err } = await supabase
+    const { data, error: err } = await supabase
       .from(QUIZ_ATTEMPT_TABLE)
       .insert(quizAttemptToDbQuizAttempt(quizAttempt.value))
+      .select()
+      .single()
+
+    if (data && quizAttempt.value) {
+      quizAttempt.value.id = data.id
+      currentStage.value = 'quiz'
+    }
 
     if (err) {
       error.value = err.message
@@ -121,38 +112,91 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
       error.value = err.message
     }
 
+    currentStage.value = 'summary'
+
     loading.value = false
   }
 
-  const endQuizAttempt = async () => {
-    if (!quizAttempt.value) {
-      error.value = 'No quiz attempt found'
+  // --- Pobierz liczbę zakończonych podejść użytkownika do quizu ---
+  const getUserAttemptsCount = async (): Promise<number> => {
+    if (!currentQuiz.value?.id || !user.value?.id) {
+      return 0
+    }
+    const { data, error: err } = await supabase
+      .from(QUIZ_ATTEMPT_TABLE)
+      .select('id')
+      .eq('quizId', currentQuiz.value.id)
+      .eq('userId', user.value.id)
+      .eq('status', 'submitted')
+
+    if (err) {
+      error.value = err.message
+
+      return 0
+    }
+
+    return data?.length || 0
+  }
+
+  const getStartedQuizAttempt = async () => {
+    if (!user.value?.id) {
+      error.value = 'User not found'
 
       return
     }
-    if (quizAttempt.value.status === 'submitted') {
+
+    if (!currentQuiz.value) {
+      error.value = 'No quiz selected'
+
       return
     }
+
+    clearStore()
 
     loading.value = true
     error.value = null
 
-    quizAttempt.value.status = 'submitted'
-    const { error: err } = await supabase
+    userAttempts.value = await getUserAttemptsCount()
+
+    if (userAttempts.value >= currentQuiz.value.maxAttempts) {
+      quizAttempt.value = null
+      currentStage.value = 'no-attempts'
+      loading.value = false
+
+      return
+    }
+
+    const { data, error: err } = await supabase
       .from(QUIZ_ATTEMPT_TABLE)
-      .update(quizAttemptToDbQuizAttempt(quizAttempt.value))
-      .eq('id', quizAttempt.value.id)
+      .select('*')
+      .eq('quizId', currentQuiz.value.id)
+      .eq('userId', user.value.id)
+      .eq('status', 'started')
+      .maybeSingle()
+
     if (err) {
       error.value = err.message
+
+      return
+    }
+
+    if (data !== null) {
+      quizAttempt.value = dbQuizAttemptToQuizAttempt(data)
+      if (new Date(quizAttempt.value.dueDate).getTime() > Date.now()) {
+        currentStage.value = 'continue'
+      }
+      else {
+        await submitQuizAttempt()
+        clearStore()
+        currentStage.value = 'start'
+      }
+    }
+    else {
+      quizAttempt.value = null
+      currentStage.value = 'start'
     }
 
     loading.value = false
-  }
-
-  const forceStartQuizAttempt = async () => {
-    await endQuizAttempt()
-    quizAttempt.value = null
-    await startQuizAttempt()
   }
 
   // --- Aktualny indeks i pytanie ---
@@ -170,7 +214,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
   })
 
   // --- Odpowiedź na pytanie ---
-  const answerQuestion = async (questionId: string, answerIds: string[]) => {
+  const answerQuestion = async (answerIds: string[]) => {
     if (!quizAttempt.value) {
       error.value = 'No quiz attempt found'
 
@@ -186,7 +230,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     loading.value = true
     error.value = null
 
-    const question = currentQuiz.value?.questions.find(q => q.id === questionId)
+    const question = currentQuiz.value?.questions.find(q => q.id === currentQuestion.value?.id)
 
     if (!question) {
       error.value = 'Question not found'
@@ -216,7 +260,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     // --- OBSŁUGA STREAKA I BONUSU ---
     if (isPerfect) {
       quizAttempt.value.currentStreak++
-      if (quizAttempt.value.currentStreak >= 3) {
+      if (quizAttempt.value.currentStreak >= 3 && currentQuestionIndex) {
         const bonuses: ('minigame_shooter' | 'minigame_memory' | '50_50' | 'bonus_time')[] = [
           'minigame_shooter',
           'minigame_memory',
@@ -226,6 +270,7 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
         const randomBonus = bonuses[Math.floor(Math.random() * bonuses.length)] ?? null
         quizAttempt.value.currentBonus = randomBonus
         quizAttempt.value.currentStreak = 0
+        currentStage.value = 'bonus'
       }
     }
     else {
@@ -250,6 +295,20 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     }
 
     loading.value = false
+  }
+
+  const endBonus = async (pointsGained: number) => {
+    if (quizAttempt.value) {
+      quizAttempt.value.finalScore += pointsGained
+      quizAttempt.value.currentBonus = null
+
+      const { error: err } = await supabase.from(QUIZ_ATTEMPT_TABLE).update(quizAttemptToDbQuizAttempt(quizAttempt.value)).eq('id', quizAttempt.value.id)
+      if (err) {
+        error.value = err.message
+      }
+
+      currentStage.value = 'quiz'
+    }
   }
 
   // --- Wcześniejsze zakończenie quizu przez użytkownika ---
@@ -284,19 +343,59 @@ export const useQuizAttemptStore = defineStore('quizAttempt', () => {
     loading.value = false
   }
 
+  const incrementQuestionIndex = () => {
+    quizAttempt.value!.questionsAnswered++
+  }
+
+  const startNewQuizAttempt = async () => {
+    await submitQuizAttempt()
+  }
+
+  const updateCurrentStage = (stage: Stage) => {
+    currentStage.value = stage
+  }
+
+  const filteredAnswers = computed(() => {
+    if (quizAttempt.value?.currentBonus === '50_50' && currentQuestion.value !== null) {
+      const incorrectAnswers = currentQuestion.value?.answers.filter(a => !a.correct)
+
+      // Oblicz ile niepoprawnych odpowiedzi trzeba usunąć (połowa, zaokrąglona w dół)
+      const numToRemove = Math.ceil(incorrectAnswers.length / 2)
+
+      // Wybierz losowe niepoprawne odpowiedzi do usunięcia
+      const toRemove = incorrectAnswers
+        .sort(() => Math.random() - 0.5)
+        .slice(0, numToRemove)
+
+      // Zwróć nową tablicę z usuniętymi wybranymi niepoprawnymi odpowiedziami
+      return currentQuestion.value?.answers.filter(a => !toRemove.includes(a))
+    }
+    else {
+      return currentQuestion.value?.answers
+    }
+  })
+
   return {
     quizAttempt,
     error,
     loading,
+    userAttempts,
+    currentStage,
     getStartedQuizAttempt,
     startQuizAttempt,
     answerQuestion,
     submitQuizAttempt,
-    endQuizAttempt,
-    forceStartQuizAttempt,
     cancelQuizAttempt,
     currentQuestionIndex,
     currentQuestion,
     addTimeToQuizAttempt,
+    getUserAttemptsCount,
+    incrementQuestionIndex,
+    continueQuiz,
+    startNewQuizAttempt,
+    clearStore,
+    endBonus,
+    updateCurrentStage,
+    filteredAnswers,
   }
 })

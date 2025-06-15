@@ -6,6 +6,7 @@ import type { Quiz } from '@/types/quiz'
 import type { Course } from '~/types/course'
 import type { QuizAttempt } from '~/types/quizAttempt'
 import type { QuizSummary } from '~/types/quizSummary'
+import type { RankingPlace } from '~/types/ranking'
 import type { User } from '~/types/user'
 
 export type DBUser = Tables<'user'>
@@ -160,21 +161,28 @@ export function dbUserToUser(dbUser: DBUser): User {
     lastName: dbUser.lastName,
     role: dbUser.role,
     studentIndex: dbUser.studentIndex || null,
+    photoUrl: dbUser.photoUrl || null,
   }
 }
 
 // --- Quiz Attempt ---
 export function dbQuizAttemptToQuizAttempt(dbQuizAttempt: DBQuizAttempt): QuizAttempt {
+  const convertToLocalDate = (dateString: string) => {
+    const date = new Date(dateString)
+
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  }
+
   return {
     id: dbQuizAttempt.id,
     quizId: dbQuizAttempt.quizId,
     userId: dbQuizAttempt.userId,
-    attemptDate: new Date(dbQuizAttempt.attemptDate),
+    attemptDate: convertToLocalDate(dbQuizAttempt.attemptDate),
     finalScore: dbQuizAttempt.finalScore,
     questionsAnswered: dbQuizAttempt.questionAnswered,
     currentStreak: dbQuizAttempt.currentStreak,
     status: dbQuizAttempt.status,
-    dueDate: new Date(dbQuizAttempt.dueDate),
+    dueDate: convertToLocalDate(dbQuizAttempt.dueDate),
     currentBonus: dbQuizAttempt.currentBonus || null,
   }
 }
@@ -191,4 +199,63 @@ export function quizAttemptToDbQuizAttempt(quizAttempt: QuizAttempt): DBQuizAtte
     dueDate: quizAttempt.dueDate.toISOString(),
     currentBonus: quizAttempt.currentBonus || null,
   }
+}
+
+export function dbRankingToRanking(dbRanking: {
+  finalScore: number
+  user: DBUser
+  quiz: DBQuiz & { course: DBCourse }
+}[], prizes: Prize[]): RankingPlace[] {
+  const userBestScores = dbRanking.reduce((acc, attempt) => {
+    const userId = attempt.user.id
+    const quizId = attempt.quiz.id
+
+    if (!acc[userId]) {
+      acc[userId] = {
+        user: dbUserToUser(attempt.user),
+        quizScores: {},
+        totalPoints: 0,
+      }
+    }
+
+    // Update best score for this quiz if it's higher
+    if (!acc[userId].quizScores[quizId]
+      || attempt.finalScore > acc[userId].quizScores[quizId]) {
+      acc[userId].quizScores[quizId] = attempt.finalScore
+    }
+
+    return acc
+  }, {} as Record<string, {
+    user: User
+    quizScores: Record<string, number>
+    totalPoints: number
+  }>)
+
+  // Calculate total points for each user
+  Object.values(userBestScores).forEach((userScore) => {
+    userScore.totalPoints = Object.values(userScore.quizScores)
+      .reduce((sum, score) => sum + score, 0)
+  })
+
+  // Convert to array and sort by total points
+  const ranking = Object.values(userBestScores)
+    .map(userScore => ({
+      user: userScore.user,
+      points: userScore.totalPoints,
+      position: 0, // temporary position
+    }))
+    .sort((a, b) => b.points - a.points)
+    .map((place, index) => ({
+      ...place,
+      position: index + 1,
+      reward: prizes.filter((p) => {
+        if (Array.isArray(p.place)) {
+          return index + 1 >= p.place[0] && index + 1 <= p.place[1]
+        }
+
+        return index + 1 === p.place
+      }).map(p => p.reward),
+    }))
+
+  return ranking
 }

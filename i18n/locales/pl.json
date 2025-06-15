@@ -13,7 +13,11 @@
     "delete": "Usuń",
     "role": "Rola",
     "admin": "Administrator",
-    "student": "Student"
+    "student": "Student",
+    "yes": "Tak",
+    "No": "Nie",
+    "no": "Nie",
+    "okay": "Okej"
   },
   "auth": {
     "forgot-password": "Zapomniałem hasła",
@@ -71,7 +75,11 @@
     "course-description": "Opis kursu",
     "course-photo": "Zdjęcie kursu",
     "courses-view": "Widok kursów",
-    "quiz-list": "Lista quizów"
+    "quiz-list": "Lista quizów",
+    "ranking": "Ranking",
+    "ranking-empty": "Ranking jest pusty",
+    "quiz-list-empty": "Brak quizów",
+    "points-short": "pkt."
   },
   "quiz": {
     "quiz": "Quiz",
@@ -88,6 +96,35 @@
     "add-quiz": "Utwórz quiz",
     "quizzes": "Quizy",
     "quizz-title": "Quiz #{0}",
-    "no-quizzes-available": "Brak dostepnych quizów."
+    "no-quizzes-available": "Brak dostepnych quizów.",
+    "your-attempts": "Twoje podejścia",
+    "no-attempts-available": "Brak dostepnych podejść.",
+    "start-quiz": "Rozpocznij quiz",
+    "error-fetching-quiz": "Błąd podczas pobierania quizu",
+    "question-count": "Ilość pytań",
+    "time-left": "Pozostały czas",
+    "end-quiz": "Zakończ quiz",
+    "unfinished-attempt": "Masz niedokończone podjeście",
+    "do-you-want-to-continue": "Czy chciałbyś je kontynuować?",
+    "max-attempts-exceeded": "Limit podejść został wyczerpany",
+    "next-question": "Następne pytanie",
+    "summary": "Podsumowanie Quizu",
+    "achievied-points": "Ilość zdobytych punktów",
+    "questions-count": "Ilość odpowiedzi",
+    "attempt-time": "Długość podejścia",
+    "back-to-course": "Powrót do kursu"
+  },
+  "bonus": {
+    "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",
+    "obtained-bonus": "Otrzymany bonus to",
+    "shooter": "Minigra - strzelnica",
+    "memory": "Minigra - memory",
+    "50_50": "50 / 50",
+    "bonus_time": "Dodatkowy czas"
+  },
+  "minigame": {
+    "shooter-title": "Minigra - strzelnica",
+    "shooter-instructions": "Zestrzel jak najwięcej celów w ciągu minuty, otrzymując od 1 do 10 pkt. za każdy cel.",
+    "shooter-gained-points": "Udało Ci się zdobyć {points} punktów!"
   }
 }

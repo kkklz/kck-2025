@@ -8,7 +8,6 @@ export interface Course {
   description: string
   photoUrl?: string
   quizzes: QuizSummary[]
-  // ranking: QuizAttempt[]
   users: User[]
   prizes: Prize[]
 }
