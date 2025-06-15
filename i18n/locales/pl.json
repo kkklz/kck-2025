@@ -121,5 +121,10 @@
     "memory": "Minigra - memory",
     "50_50": "50 / 50",
     "bonus_time": "Dodatkowy czas"
+  },
+  "minigame": {
+    "shooter-title": "Minigra - strzelnica",
+    "shooter-instructions": "Zestrzel jak najwięcej celów w ciągu minuty, otrzymując od 1 do 10 pkt. za każdy cel.",
+    "shooter-gained-points": "Udało Ci się zdobyć {points} punktów!"
   }
 }

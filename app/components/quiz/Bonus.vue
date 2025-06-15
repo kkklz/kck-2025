@@ -22,16 +22,14 @@
       </v-btn>
     </v-card>
 
-    <!--
-      <v-overlay
+    <v-overlay
       v-model="showMinigame"
       persistent
-      >
-      <v-container>
-      asdasd
+    >
+      <v-container class="!p-0">
+        <MinigameShooter v-if="quizAttempt.currentBonus === 'minigame_shooter'" />
       </v-container>
-      </v-overlay>
-    -->
+    </v-overlay>
   </div>
 </template>
 
@@ -47,7 +45,7 @@ const quizStore = useQuizStore()
 
 const { currentQuiz } = storeToRefs(quizStore)
 
-// const showMinigame = ref(false)
+const showMinigame = ref(false)
 
 const { t } = useI18n()
 
@@ -70,6 +68,10 @@ async function handleStartBonus() {
     }
     case '50_50': {
       quizAttemptStore.updateCurrentStage('quiz')
+      break
+    }
+    case 'minigame_shooter': {
+      showMinigame.value = true
     }
   }
 }
