@@ -25,16 +25,21 @@
 
     <div
       v-if="beginMinigame"
+      class="h-screen w-screen relative"
     >
       <h1 class="text-6xl font-bold my-8 text-center">
         {{ $t('minigame.memory-title') }}
       </h1>
 
+      <h2 class="text-2xl font-bold my-8 text-center">
+        {{ totalPoints }} {{ $t('courses.points-short') }}
+      </h2>
+
       <div class="text-2xl font-bold right-10 top-2 absolute">
         {{ formatDate(minigameTime) }}
       </div>
 
-      <div class="p-4 gap-4 grid grid-cols-5">
+      <div class="mx-auto p-4 gap-4 grid grid-cols-5 w-fit">
         <MinigameMemoryCard
           v-for="(card, index) in memoryCards"
           :key="index"
