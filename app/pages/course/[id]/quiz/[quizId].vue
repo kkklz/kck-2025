@@ -172,19 +172,16 @@ function animate() {
 @keyframes slideIn {
   0% {
     opacity: 1;
-    transform: scale(1);
     filter: blur(0);
   }
 
   50% {
     opacity: 0;
-    transform: scale(0.9);
-    filter: blur(2px);
+    filter: blur(32px);
   }
 
   100% {
     opacity: 1;
-    transform: scale(1);
     filter: blur(0);
   }
 }
