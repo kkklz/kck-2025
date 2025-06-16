@@ -2,7 +2,9 @@
   <v-app class="font-roboto antialiased">
     <AppBar />
 
-    <NuxtLayout>
+    <NuxtLayout class="relative">
+      <Snackbar />
+
       <v-main>
         <NuxtPage />
       </v-main>
