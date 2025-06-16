@@ -177,7 +177,7 @@ async function handleSubmit() {
     return
   }
 
-  if (questions.value.some(q => !q.content.trim() || q.answers.length < 2 || !q.answers.some(a => a.correct))) {
+  if (questions.value.some(q => !q.content.trim() || q.answers.length < 2 || !q.answers.some(a => a.correct) || q.answers.some(a => a.answer.trim() === ''))) {
     error.value = { message: t('quiz.invalid-questions') } as PostgrestError
     snackbarStore.showSnackbar({ snackbarText: error.value.message, snackbarType: 'error' })
 
