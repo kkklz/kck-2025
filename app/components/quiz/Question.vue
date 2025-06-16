@@ -40,9 +40,12 @@
         class="mb-4 flex flex-row gap-3"
       >
         <div
+          v-ripple="{'class': `text-${model?.includes(answer.id)
+            ? 'gray'
+            : 'blue'}`}"
           :class="`px-3 py-2 rounded-md w-full cursor-pointer transition-all duration-300 text-wrap ${model?.includes(answer.id)
-            ? 'ring-blue-500 ring-2'
-            : 'ring-gray-300 ring'}`"
+            ? 'ring-blue-500 ring-2 bg-blue-200'
+            : 'ring-gray-300 ring bg-white'}`"
           @click="handleSelectAnswer(answer.id)"
         >
           {{ answer.answer }}
