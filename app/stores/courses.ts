@@ -11,9 +11,6 @@ export const useCourseStore = defineStore('course', () => {
 
   const ranking = ref<RankingPlace[]>([])
 
-  const userStore = useUserStore()
-  const { user } = storeToRefs(userStore)
-
   const supabase = useSupabaseClient<Database>()
   const COURSE_TABLE = 'course'
   const COURSE_USER_TABLE = 'course_user'
@@ -77,42 +74,20 @@ export const useCourseStore = defineStore('course', () => {
     error.value = null
     loading.value = true
     currentCourse.value = null
-    let query
-    if (!user.value)
-      return
-    if (user.value.role === 'admin') {
-      query = supabase.from(COURSE_TABLE)
-        .select(`
-          *,
-          quiz(*),
-          prize(*),
-          course_user(
-            user(*)
-          )
-        `)
-        .eq('id', id)
-        .single()
-    }
-    if (user.value.role === 'student') {
-      query = supabase.from(COURSE_TABLE)
-        .select(`
-          *,
-          quiz(*),
-          prize(*),
-          course_user(
-            user(*)
-          )
-        `)
-        .eq('id', id)
-        .eq('course_user.userId', user.value.id)
-        .not('course_user', 'is', null)
-        .single()
-    }
-    if (!query)
-      return
 
     try {
-      const { data, error: courseError } = await query
+      const { data, error: courseError } = await supabase.from(COURSE_TABLE)
+        .select(`
+          *,
+          quiz(*),
+          prize(*),
+          course_user(
+            user(*)
+          )
+        `)
+        .eq('id', id)
+        .single()
+
       if (courseError)
         throw courseError
       if (!data)

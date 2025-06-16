@@ -168,6 +168,7 @@ const { t } = useI18n()
 const breadcrumbs = [{ title: t('courses.courses-view'), to: '/' }]
 
 const courseStore = useCourseStore()
+const { user } = storeToRefs(useUserStore())
 const { courses, loading, error } = storeToRefs(courseStore)
 
 const searchByName = ref('')
@@ -211,7 +212,13 @@ const filteredCourses = computed(() => {
 })
 
 onBeforeMount(async () => {
-  await courseStore.fetchCourses('all')
+  if (!user.value)
+    return
+
+  if (user.value.role === 'admin')
+    await courseStore.fetchCourses('all')
+  else
+    await courseStore.fetchCourses('signed', user.value.id)
 })
 </script>
 
