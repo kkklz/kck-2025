@@ -21,7 +21,7 @@
               density="compact"
               prepend-icon="mdi-file-document"
               variant="elevated"
-              class="bg-green"
+              class="bg-white"
             >
               {{ $t('admin.quizes-number', [
                 currentCourse?.quizzes.length,
@@ -33,7 +33,7 @@
               density="compact"
               prepend-icon="mdi-account"
               variant="elevated"
-              class="bg-green"
+              class="bg-white"
             >
               {{ $t('admin.signed-users-number', [
                 currentCourse?.users.length,
@@ -189,11 +189,6 @@ const { quizzes } = storeToRefs(quizStore)
 
 const breadcrumbs = ref<{ title: string, to?: string }[]>()
 onBeforeMount(async () => {
-  breadcrumbs.value = [
-    { title: t('courses.courses-view'), to: '/' },
-    { title: currentCourse.value?.name || 'Kurs', to: `/course/${courseId}` },
-  ]
-
   quizStore.clearStore()
 
   Promise.all([
@@ -201,5 +196,10 @@ onBeforeMount(async () => {
     await quizStore.fetchQuizzes(courseId),
     await courseStore.fetchRanking(courseId),
   ])
+
+  breadcrumbs.value = [
+    { title: t('courses.courses-view'), to: '/' },
+    { title: currentCourse.value?.name || 'Kurs', to: `/course/${courseId}` },
+  ]
 })
 </script>
