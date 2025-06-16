@@ -8,18 +8,36 @@
 
     <v-card
       elevation="2"
-      class="mx-auto pa-6 !max-w-[600px]"
+      class="bonus-card mx-auto pa-6 !max-w-[600px]"
     >
-      <v-card-title>{{ $t('bonus.gj-u-hv-bonus') }}</v-card-title>
+      <v-card-title class="mb-6 text-center uppercase !text-3xl !font-bold">
+        {{ $t('bonus.gj-u-hv-bonus') }}
+      </v-card-title>
 
-      <v-card-text v-if="quizAttempt.currentBonus">
-        {{ $t('bonus.obtained-bonus') }}: {{ bonusesMap[quizAttempt.currentBonus] }}
+      <v-card-text
+        v-if="quizAttempt.currentBonus"
+        class="text-center"
+      >
+        <v-icon
+          :icon="getBonusIcon(quizAttempt.currentBonus)"
+          size="64"
+          color="primary"
+          class="bonus-icon mb-4"
+        />
+
+        <div class="text-h6">
+          {{ $t('bonus.obtained-bonus') }}:
+          <span class="text-primary">
+            {{ bonusesMap[quizAttempt.currentBonus] }}
+          </span>
+        </div>
       </v-card-text>
 
       <v-btn
         block
         variant="tonal"
         color="primary"
+        class="pulse-button mt-8"
         @click="handleStartBonus"
       >
         {{ $t('universal.okay') }}
@@ -63,6 +81,15 @@ const bonusesMap: Record<string, string> = {
   'bonus_time': t('bonus.bonus_time'),
 }
 
+function getBonusIcon(bonusType: string): string {
+  return {
+    'minigame_shooter': 'mdi-target',
+    'minigame_memory': 'mdi-brain',
+    '50_50': 'mdi-dice-multiple',
+    'bonus_time': 'mdi-clock-plus',
+  }[bonusType] || 'mdi-gift'
+}
+
 async function handleStartBonus() {
   if (!currentQuiz.value)
     return
@@ -88,10 +115,58 @@ async function handleStartBonus() {
     }
   }
 }
-
-// Pozostały czas / (Czas trwania quizu / ilość pytań) * średnia pkt. za pytanie
-
-// function handleEndMinigame(points: number) {
-
-// }
 </script>
+
+<style scoped>
+.bonus-card {
+  animation: slideUp 0.5s ease-out;
+  background: linear-gradient(145deg, var(--v-theme-surface) 0%, var(--v-theme-background) 100%);
+  border: 1px solid rgba(var(--v-theme-primary), 0.1);
+}
+
+.bonus-icon {
+  animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.pulse-button {
+  animation: pulse 2s infinite;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(var(--v-theme-primary), 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0);
+  }
+}
+</style>
