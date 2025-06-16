@@ -163,7 +163,29 @@ export const useQuizStore = defineStore('quiz', () => {
       })
       const quiz = dbQuizToQuiz(quizData, questions)
 
-      currentQuiz.value = quiz
+      const { data: highestScoreData, error: highestScoreError } = await supabase.from('quiz_attempt')
+        .select(`
+          user(*),
+          finalScore,
+          quiz(*)
+        `)
+        .not('quiz', 'is', null)
+        .eq('quiz.id', quizId)
+
+      if (highestScoreError || !highestScoreData || highestScoreData.length === 0) {
+        throw highestScoreError
+      }
+
+      const { user } = useUserStore()
+
+      const highestScore = highestScoreData
+        .filter(attempt => attempt.quiz.id === quizId && attempt.user.id === user?.id)
+      if (highestScore.length === 0) {
+        currentQuiz.value = quiz
+
+        return
+      }
+      currentQuiz.value = { ...quiz, highScore: highestScore.reduce((max, attempt) => Math.max(max, attempt.finalScore || 0), 0) }
     }
     catch (err: any) {
       error.value = err

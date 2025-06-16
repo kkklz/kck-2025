@@ -5,7 +5,7 @@
     />
 
     <v-card
-      class="mx-5"
+      class="mx-5 mb-5"
     >
       <v-img
         :src="currentCourse?.photoUrl || '/default-course-image-large.webp'"
@@ -46,7 +46,11 @@
       <v-card-subtitle class="my-4">
         <b>{{ $t('courses.course-description') }}</b>
 
-        <br> {{ currentCourse?.description }}
+        <br>
+
+        <p class="w-full text-wrap">
+          {{ currentCourse?.description }}
+        </p>
       </v-card-subtitle>
 
       <v-divider />
@@ -183,9 +187,11 @@ const courseId = route.params.id as string
 
 const courseStore = useCourseStore()
 const quizStore = useQuizStore()
+const userStore = useUserStore()
 
 const { currentCourse, ranking } = storeToRefs(courseStore)
 const { quizzes } = storeToRefs(quizStore)
+const { user } = storeToRefs(userStore)
 
 const breadcrumbs = ref<{ title: string, to?: string }[]>()
 onBeforeMount(async () => {
@@ -197,8 +203,18 @@ onBeforeMount(async () => {
     await courseStore.fetchRanking(courseId),
   ])
 
+  if (user.value?.role === 'student') {
+    await courseStore.fetchCourse(courseId)
+
+    if (currentCourse.value?.users.filter(c => c.id === user.value?.id).length === 0) {
+      navigateTo('/')
+
+      return
+    }
+  }
+
   breadcrumbs.value = [
-    { title: t('courses.courses-view'), to: '/' },
+    { title: t('courses.courses-view'), to: '/courses' },
     { title: currentCourse.value?.name || 'Kurs', to: `/course/${courseId}` },
   ]
 })

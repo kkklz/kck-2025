@@ -64,7 +64,8 @@
     "place-from": "Miejsce (od)",
     "place-to": "Miejsce (do)",
     "prize": "Nagroda",
-    "invalid-places-message": "Miejsce (od) musi być mniejsze lub równe miejscu (do)"
+    "invalid-places-message": "Miejsce (od) musi być mniejsze lub równe miejscu (do)",
+    "empty-prize": "Nagroda nie może być pusta"
   },
   "users": {
     "user-name-with-index": "{0} {1} ({2})",
@@ -116,8 +117,9 @@
     "questions-count": "Ilość odpowiedzi",
     "attempt-time": "Długość podejścia",
     "back-to-course": "Powrót do kursu",
-    "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną",
-    "your-highscore": "Twój najlepszy wynik"
+    "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną. Odpowiedzi nie mogą być puste.",
+    "your-highscore": "Twój najlepszy wynik",
+    "questions-empty": "Quiz musi posiadać conajmniej jedno pytanie"
   },
   "bonus": {
     "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",

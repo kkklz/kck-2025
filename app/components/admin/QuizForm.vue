@@ -11,13 +11,6 @@
         {{ title }}
       </v-card-title>
 
-      <v-alert
-        v-if="error !== null"
-        type="error"
-      >
-        {{ error.message }}
-      </v-alert>
-
       <v-form
         class="px-6 py-6"
         validate-on="lazy"
@@ -113,6 +106,7 @@ const maxAttempts = ref(1)
 const questions = ref<Question[]>([])
 const loading = ref(false)
 
+const snackbarStore = useSnackbarStore()
 const quizStore = useQuizStore()
 const { error, currentQuiz } = storeToRefs(quizStore)
 const route = useRoute()
@@ -176,8 +170,16 @@ async function handleSubmit() {
   if (!description.value.trim())
     return
 
-  if (questions.value.some(q => !q.content.trim() || q.answers.length < 2 || !q.answers.some(a => a.correct))) {
+  if (questions.value.length === 0) {
+    error.value = { message: t('quiz.questions-empty') } as PostgrestError
+    snackbarStore.showSnackbar({ snackbarText: error.value.message, snackbarType: 'error' })
+
+    return
+  }
+
+  if (questions.value.some(q => !q.content.trim() || q.answers.length < 2 || !q.answers.some(a => a.correct) || q.answers.some(a => a.answer.trim() === ''))) {
     error.value = { message: t('quiz.invalid-questions') } as PostgrestError
+    snackbarStore.showSnackbar({ snackbarText: error.value.message, snackbarType: 'error' })
 
     return
   }

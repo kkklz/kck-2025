@@ -34,31 +34,19 @@
 
     <!-- Odpowiedzi -->
     <div v-if="question">
-      <v-radio-group
-        v-if="isSingleCorrect"
-        v-model="model"
-        class="mb-4"
-        hide-details
+      <div
+        v-for="answer in filteredAnswers"
+        :key="answer.id"
+        class="mb-4 flex flex-row gap-3"
       >
-        <v-radio
-          v-for="answer in filteredAnswers"
-          :key="answer.id"
-          :label="answer.answer"
-          :value="[
-            answer.id,
-          ]"
-        />
-      </v-radio-group>
-
-      <div v-else>
-        <v-checkbox
-          v-for="answer in filteredAnswers"
-          :key="answer.id"
-          v-model="model"
-          hide-details
-          :label="answer.answer"
-          :value="answer.id"
-        />
+        <div
+          :class="`px-3 py-2 rounded-md w-full cursor-pointer transition-all duration-300 text-wrap ${model?.includes(answer.id)
+            ? 'ring-blue-500 ring-2'
+            : 'ring-gray-300 ring'}`"
+          @click="handleSelectAnswer(answer.id)"
+        >
+          {{ answer.answer }}
+        </div>
       </div>
     </div>
 
@@ -110,6 +98,25 @@ function updateTimer() {
   }
   else {
     timeLeft.value = difference
+  }
+}
+
+function handleSelectAnswer(answerId: string) {
+  if (model.value) {
+    if (isSingleCorrect.value) {
+      model.value = [answerId]
+    }
+    else {
+      if (model.value.includes(answerId)) {
+        model.value = model.value.filter(a => a !== answerId)
+      }
+      else {
+        model.value.push(answerId)
+      }
+    }
+  }
+  else {
+    model.value = [answerId]
   }
 }
 

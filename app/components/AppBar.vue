@@ -32,6 +32,15 @@
         </v-list-item>
 
         <v-list-item
+          v-if="authUser"
+          link
+          variant="plain"
+          to="/courses"
+        >
+          {{ $t('courses.courses-list') }}
+        </v-list-item>
+
+        <v-list-item
           v-if="user?.role === 'admin'"
           link
           to="/admin"

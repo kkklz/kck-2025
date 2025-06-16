@@ -52,7 +52,7 @@
             <v-col cols="2">
               <v-number-input
                 v-model="newTo"
-                :min="1"
+                :min="newFrom"
                 :max="50"
                 :label="$t('prizes.place-to')"
                 control-variant="hidden"
@@ -68,15 +68,6 @@
               />
             </v-col>
           </v-row>
-
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-            density="compact"
-            class="mb-2"
-          >
-            {{ errorMessage }}
-          </v-alert>
 
           <v-btn
             variant="outlined"
@@ -97,16 +88,16 @@ const { t } = useI18n()
 
 const prizes = defineModel<Omit<Prize, 'id'>[]>({ required: true })
 
+const snackbarStore = useSnackbarStore()
 const errorMessage = ref('')
 const newFrom = ref(1)
 const newTo = ref(1)
 const newReward = ref('')
 
 function addPrize() {
-  if (newReward.value.trim() === '')
-    return
-  if (newFrom.value > newTo.value) {
-    errorMessage.value = t('prizes.invalid-places-message')
+  if (newReward.value.trim() === '') {
+    errorMessage.value = t('prizes.empty-prize')
+    snackbarStore.showSnackbar({ snackbarText: errorMessage.value, snackbarType: 'error' })
 
     return
   }
