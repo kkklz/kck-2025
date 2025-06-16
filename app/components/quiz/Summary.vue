@@ -28,49 +28,55 @@
     <v-divider />
 
     <v-card-text class="flex flex-col gap-4 !text-base">
-      <div>
+      <div class="text-lg flex items-center">
         <v-icon
           color="secondary"
           icon="mdi-star-four-points-circle-outline"
           class="mr-2"
         />
 
-        {{ $t('quiz.achievied-points') }}: <v-chip
-          variant="tonal"
-          color="primary"
-        >
-          {{ quizAttempt?.finalScore }}
-        </v-chip>
+        <span class="flex gap-2 items-center">
+          {{ $t('quiz.achievied-points') }}: <v-chip
+            variant="tonal"
+            color="primary"
+          >
+            {{ quizAttempt?.finalScore }}
+          </v-chip>
+        </span>
       </div>
 
-      <div>
+      <div class="text-lg flex items-center">
         <v-icon
           color="secondary"
           icon="mdi-text-box-check-outline"
           class="mr-2"
         />
 
-        {{ $t('quiz.questions-count') }}: <v-chip
-          variant="tonal"
-          color="primary"
-        >
-          {{ quizAttempt?.questionsAnswered }}
-        </v-chip>
+        <span class="flex gap-2 items-center">
+          {{ $t('quiz.questions-count') }}: <v-chip
+            variant="tonal"
+            color="primary"
+          >
+            {{ quizAttempt?.questionsAnswered }}
+          </v-chip>
+        </span>
       </div>
 
-      <div>
+      <div class="text-lg flex items-center">
         <v-icon
           color="secondary"
           icon="mdi-clock-time-eight-outline"
           class="mr-2"
         />
 
-        {{ $t('quiz.attempt-time') }}: <v-chip
-          variant="tonal"
-          color="primary"
-        >
-          {{ formatDate(Math.floor((Date.now() - quizAttempt.attemptDate.getTime()) / 1000)) }}
-        </v-chip>
+        <span class="flex gap-2 items-center">
+          {{ $t('quiz.attempt-time') }}: <v-chip
+            variant="tonal"
+            color="primary"
+          >
+            {{ formatDate(Math.floor((Date.now() - quizAttempt.attemptDate.getTime()) / 1000)) }}
+          </v-chip>
+        </span>
       </div>
     </v-card-text>
 
