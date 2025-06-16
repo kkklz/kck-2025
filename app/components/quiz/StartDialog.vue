@@ -3,7 +3,7 @@
     elevation="2"
     class="mx-auto pa-6 !max-w-[600px]"
   >
-    <v-card-title class="bg-primary !flex !items-center !justify-between">
+    <v-card-title class="border-rounded bg-primary !flex !items-center !justify-between">
       <v-btn
         icon="mdi-arrow-left"
         variant="text"
