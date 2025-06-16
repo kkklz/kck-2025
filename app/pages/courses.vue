@@ -122,7 +122,7 @@
 <script setup lang="tsx">
 const { t } = useI18n()
 
-const breadcrumbs = [{ title: t('courses.courses-view'), to: '/' }]
+const breadcrumbs = [{ title: t('courses.courses-view'), to: '/courses' }]
 
 const courseStore = useCourseStore()
 const { user } = storeToRefs(useUserStore())

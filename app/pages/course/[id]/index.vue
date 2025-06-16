@@ -210,7 +210,7 @@ onBeforeMount(async () => {
   }
 
   breadcrumbs.value = [
-    { title: t('courses.courses-view'), to: '/' },
+    { title: t('courses.courses-view'), to: '/courses' },
     { title: currentCourse.value?.name || 'Kurs', to: `/course/${courseId}` },
   ]
 })
