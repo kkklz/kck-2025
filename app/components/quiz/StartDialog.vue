@@ -3,7 +3,7 @@
     elevation="2"
     class="mx-auto pa-6 !max-w-[600px]"
   >
-    <div class="flex items-center justify-between">
+    <v-card-title class="bg-primary !flex !items-center !justify-between">
       <v-btn
         icon="mdi-arrow-left"
         variant="text"
@@ -13,9 +13,7 @@
       <span class="font-weight-bold text-h6">{{ $t('quiz.quiz') }}</span>
 
       <div style="width: 40px;" />
-    </div>
-
-    <v-divider class="my-4" />
+    </v-card-title>
 
     <v-alert
       v-if="quizError"
@@ -24,50 +22,47 @@
       {{ $t('quiz.error-fetching-quiz') }}
     </v-alert>
 
-    <div v-if="currentQuiz">
-      <div class="mb-2">
-        <span class="font-weight-bold">{{ $t('quiz.description') }}: </span>
+    <div
+      v-if="currentQuiz"
+      class="text-lg my-4"
+    >
+      <v-card
+        v-for="(info, index) in quizInfo"
+        :key="index"
+        :title="info.title"
+        elevation="0"
+      >
+        <template #prepend>
+          <v-icon
+            color="primary"
+          >
+            {{ info.icon }}
+          </v-icon>
+        </template>
 
-        <span>{{ currentQuiz.description }}</span>
-      </div>
+        <v-card-text class="text-gray-600 ml-9 !text-base">
+          {{ info.content }}
+        </v-card-text>
 
-      <div class="mb-2">
-        <span class="font-weight-bold">{{ $t('quiz.time-limit') }}: </span>
+        <v-divider v-if="index < quizInfo.length - 1" />
+      </v-card>
+    </div>
 
-        <span>{{ Math.floor(currentQuiz.timeLimit / 60) }}</span>
-      </div>
-
-      <div class="mb-2">
-        <span class="font-weight-bold">{{ $t('quiz.max-attempts') }}: </span>
-
-        <span>{{ currentQuiz.maxAttempts }}</span>
-      </div>
-
-      <div class="mb-2">
-        <span class="font-weight-bold">{{ $t('quiz.question-count') }}: </span>
-
-        <span>{{ currentQuiz.questions.length }}</span>
-      </div>
-
-      <div class="mb-4">
-        <span class="font-weight-bold">{{ $t('quiz.your-attempts') }}: </span>
-
-        <span>{{ userAttempts }} / {{ currentQuiz.maxAttempts }}</span>
-      </div>
-
+    <v-card-actions class="justify-center">
       <v-btn
-        color="primary"
+        color="secondary"
         :loading="loading"
-        block
         size="large"
+        variant="flat"
+        block
         @click="$emit('start')"
       >
         {{ $t('quiz.start-quiz') }}
       </v-btn>
-    </div>
+    </v-card-actions>
 
     <div
-      v-else
+      v-if="!currentQuiz"
       class="py-8 text-center"
     >
       <v-progress-circular
@@ -92,6 +87,42 @@ const { loading, userAttempts, currentQuiz, quizError } = defineProps<{
 defineEmits<{ start: [] }>()
 
 const router = useRouter()
+
+const { t } = useI18n()
+
+const quizInfo = ref<any>([])
+
+watch([() => currentQuiz, () => userAttempts], () => {
+  quizInfo.value = [{
+    title: t('quiz.description'),
+    icon: 'mdi-text',
+    content: currentQuiz?.description,
+  }, {
+    title: t('quiz.time-limit'),
+    icon: 'mdi-clock-time-eight',
+    content: Math.floor(currentQuiz?.timeLimit
+      ? currentQuiz.timeLimit / 60
+      : 0),
+  }, {
+    title: t('quiz.max-attempts'),
+    icon: 'mdi-restore',
+    content: currentQuiz?.maxAttempts,
+  }, {
+    title: t('quiz.question-count'),
+    icon: 'mdi-help',
+    content: currentQuiz?.questions.length,
+  }, {
+    title: t('quiz.your-attempts'),
+    icon: 'mdi-account-reactivate',
+    content: `${userAttempts} / ${currentQuiz?.maxAttempts}`,
+  }, {
+    title: t('quiz.your-highscore'),
+    icon: 'mdi-medal',
+    content: `${currentQuiz?.highScore ?? 'Brak'} ${currentQuiz?.highScore
+      ? t('courses.points-short')
+      : ''}`,
+  }]
+}, { immediate: true })
 
 function goBack() {
   router.back()
