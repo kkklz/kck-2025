@@ -46,7 +46,11 @@
       <v-card-subtitle class="my-4">
         <b>{{ $t('courses.course-description') }}</b>
 
-        <br> {{ currentCourse?.description }}
+        <br>
+
+        <p class="w-full text-wrap">
+          {{ currentCourse?.description }}
+        </p>
       </v-card-subtitle>
 
       <v-divider />
