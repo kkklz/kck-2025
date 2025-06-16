@@ -2,6 +2,10 @@
   <div
     v-if="quizAttempt"
   >
+    <div class="flex h-screen w-screen left-0 top-0 justify-center absolute z-50">
+      <ConfettiExplosion :stage-height="1500" />
+    </div>
+
     <v-card
       elevation="2"
       class="mx-auto pa-6 !max-w-[600px]"
@@ -37,6 +41,7 @@
 
 <script setup lang="ts">
 import type { QuizAttempt } from '~/types/quizAttempt'
+import ConfettiExplosion from 'vue-confetti-explosion'
 
 const { quizAttempt } = defineProps<{
   quizAttempt: QuizAttempt | null
