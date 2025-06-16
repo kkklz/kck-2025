@@ -119,7 +119,8 @@
     "back-to-course": "Powrót do kursu",
     "invalid-questions": "Kazde pytanie musi mieć jakąś treść, przynajmniej 2 odpowiedzi i przynajmniej jedną poprawną. Odpowiedzi nie mogą być puste.",
     "your-highscore": "Twój najlepszy wynik",
-    "questions-empty": "Quiz musi posiadać conajmniej jedno pytanie"
+    "questions-empty": "Quiz musi posiadać conajmniej jedno pytanie",
+    "quiz-description": "Opis quizu"
   },
   "bonus": {
     "gj-u-hv-bonus": "Gratulacje, otrzymałeś bonus!",
