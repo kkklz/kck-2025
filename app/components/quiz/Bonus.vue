@@ -2,7 +2,7 @@
   <div
     v-if="quizAttempt"
   >
-    <div class="flex h-screen w-screen left-0 top-0 justify-center absolute z-50">
+    <div class="flex h-screen w-screen left-0 top-0 justify-center absolute overflow-hidden">
       <ConfettiExplosion :stage-height="1500" />
     </div>
 
