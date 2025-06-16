@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     authUser.value = data.user
 
-    router.push('/')
+    router.push('/courses')
   }
 
   async function login(email: string, password: string) {
@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     authUser.value = data.user
 
-    router.push('/')
+    router.push('/courses')
   }
 
   async function logout() {
