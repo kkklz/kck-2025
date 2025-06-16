@@ -183,9 +183,11 @@ const courseId = route.params.id as string
 
 const courseStore = useCourseStore()
 const quizStore = useQuizStore()
+const userStore = useUserStore()
 
 const { currentCourse, ranking } = storeToRefs(courseStore)
 const { quizzes } = storeToRefs(quizStore)
+const { user } = storeToRefs(userStore)
 
 const breadcrumbs = ref<{ title: string, to?: string }[]>()
 onBeforeMount(async () => {
@@ -196,6 +198,16 @@ onBeforeMount(async () => {
     await quizStore.fetchQuizzes(courseId),
     await courseStore.fetchRanking(courseId),
   ])
+
+  if (user.value?.role === 'student') {
+    await courseStore.fetchCourse(courseId)
+
+    if (currentCourse.value?.users.filter(c => c.id === user.value?.id).length === 0) {
+      navigateTo('/')
+
+      return
+    }
+  }
 
   breadcrumbs.value = [
     { title: t('courses.courses-view'), to: '/' },
