@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-bare-strings-in-template -->
 <template>
   <div>
-    <div class="mx-5">
+    <div class="mx-5 mb-5 !xl:mb-0">
       <v-alert v-if="error">
         {{ error.message }}
       </v-alert>

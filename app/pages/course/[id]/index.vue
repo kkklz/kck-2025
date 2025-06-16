@@ -5,7 +5,7 @@
     />
 
     <v-card
-      class="mx-5"
+      class="mx-5 mb-5"
     >
       <v-img
         :src="currentCourse?.photoUrl || '/default-course-image-large.webp'"
