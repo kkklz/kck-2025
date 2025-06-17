@@ -68,7 +68,7 @@
       <slot name="end" />
 
       <div
-        :class="model && model.length > 0 && model[0] !== ''
+        :class="model && (model.length > 0 && model[0] !== '' || model.length > 1)
           ? 'pulse'
           : 'animate-none'"
       >
