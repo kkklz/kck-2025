@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-5 mt-12">
+  <div class="mx-5 mt-6">
     <v-breadcrumbs
       :items="breadcrumbs"
     />
