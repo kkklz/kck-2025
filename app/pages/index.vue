@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-bare-strings-in-template -->
 <template>
   <div
-    class="flex min-h-screen w-full items-center left-0 top-0 absolute"
+    class="bg-white flex min-h-screen w-full items-center left-0 top-0 absolute"
   >
     <div class="pa-12 lg:w-[40%]">
       <h1 class="text-6xl font-bold mb-4">
