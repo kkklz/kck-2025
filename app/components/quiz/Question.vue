@@ -1,28 +1,38 @@
 <template>
   <v-card
     elevation="2"
-    class="mx-auto pa-8 !max-w-[600px]"
+    class="mx-auto pa-8 !max-w-[800px]"
   >
-    <!-- Nagłówek quizu i numeracja -->
-    <div class="mb-2 grid grid-cols-3 items-end">
-      <slot name="quiz-title" />
-
-      <div class="flex flex-col gap-2 items-center justify-center">
-        <span class="text-center">{{ questionIndexLabel }}</span>
-
-        <span><v-icon
-          icon="mdi-fire"
-          color="#fa6705"
-        />{{ quizAttempt?.currentStreak }}</span>
+    <v-card-title class="text-center border-rounded bg-primary">
+      <div class="color-gray-200 text-center !text-base !font-normal">
+        {{ questionIndexLabel }}
       </div>
 
-      <span class="text-end">{{ formattedTime }}</span>
+      <slot name="quiz-title" />
+    </v-card-title>
+
+    <!-- Nagłówek quizu i numeracja -->
+    <div class="text-lg my-4 flex justify-between">
+      <div
+        :class="quizAttempt && quizAttempt?.currentStreak > 0
+          ? 'pulse'
+          : ''"
+      >
+        <v-icon
+          icon="mdi-fire"
+          color="#fa6705"
+        />
+
+        <span>{{ quizAttempt?.currentStreak }}</span>
+      </div>
+
+      <span class="color-gray-500 text-end">{{ formattedTime }}</span>
     </div>
 
     <v-divider class="mb-4" />
 
     <!-- Treść pytania -->
-    <div class="mb-2 text-center">
+    <div class="text-2xl mb-2 text-center">
       {{ question?.content }}
     </div>
 
@@ -37,7 +47,7 @@
       <div
         v-for="answer in filteredAnswers"
         :key="answer.id"
-        class="mb-4 flex flex-row gap-3"
+        class="my-6 flex flex-row gap-3"
       >
         <div
           v-ripple="{'class': `text-${model?.includes(answer.id)
@@ -54,10 +64,16 @@
     </div>
 
     <!-- Przyciski -->
-    <div class="mt-6 flex gap-2 justify-between">
+    <div class="mt-8 py-4 flex flex-wrap gap-2 justify-between">
       <slot name="end" />
 
-      <slot name="confirm" />
+      <div
+        :class="model && model.length > 0 && model[0] !== ''
+          ? 'pulse'
+          : 'animate-none'"
+      >
+        <slot name="confirm" />
+      </div>
     </div>
   </v-card>
 </template>
@@ -133,3 +149,21 @@ onBeforeUnmount(() => {
     clearInterval(intervalId.value)
 })
 </script>
+
+<style scoped>
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
