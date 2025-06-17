@@ -30,6 +30,7 @@
           :precision="0"
           control-variant="split"
           :min="1"
+          :max="1000"
         />
 
         <v-number-input
@@ -38,6 +39,7 @@
           :precision="0"
           control-variant="split"
           :min="1"
+          :max="1000"
         />
 
         <div class="mb-2 mt-6 flex items-center justify-between">
