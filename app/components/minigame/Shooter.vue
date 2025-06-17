@@ -25,7 +25,7 @@
 
     <div
       v-if="beginMinigame"
-      class="h-screen w-screen relative"
+      class="h-screen w-screen select-none relative"
     >
       <h1 class="text-6xl font-bold my-8 text-center">
         {{ $t('minigame.shooter-title') }}
